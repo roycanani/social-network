@@ -36,7 +36,7 @@ export const generateToken = (userId: string): JWTToken | null => {
   };
 };
 
-export type TokenUser = Document<string, {}, User> & User;
+export type TokenUser = Document<string, unknown, User> & User;
 
 export const verifyRefreshToken = (refreshToken: string | undefined) => {
   return new Promise<TokenUser>((resolve, reject) => {
@@ -49,8 +49,8 @@ export const verifyRefreshToken = (refreshToken: string | undefined) => {
     jwt.verify(
       refreshToken,
       process.env.SERVER_TOKEN_SECRET,
-      async (err: any, payload: any) => {
-        if (err) {
+      async (err, payload) => {
+        if (err || typeof payload !== "object") {
           reject("fail");
           return;
         }
@@ -76,7 +76,7 @@ export const verifyRefreshToken = (refreshToken: string | undefined) => {
 
           resolve(user);
         } catch (err) {
-          reject("fail");
+          reject("fail " + err);
           return;
         }
       }
