@@ -59,7 +59,7 @@ const logout = async (req: Request, res: Response) => {
     await user.save();
     res.status(200).send("success");
   } catch (err) {
-    res.status(400).send("fail");
+    res.status(400).send("fail " + err);
   }
 };
 
@@ -88,7 +88,7 @@ const refresh = async (req: Request, res: Response) => {
     });
     //send new token
   } catch (err) {
-    res.status(400).send("fail");
+    res.status(400).send("fail " + err);
   }
 };
 

@@ -1,0 +1,43 @@
+name: Deploy Next.js site to Pages
+
+on:
+  push:
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          # cache: "pnpm" # Enable pnpm caching
+
+      - name: Install pnpm
+        run: npm install -g pnpm # Install pnpm globally
+
+      - name: Install dependencies Backend
+        run: pnpm install --frozen-lockfile
+        working-directory: ./backend
+
+      - name: Run Lint Backend
+        run: pnpm run lint
+        working-directory: ./backend
+
+      # Don't Run tests in the process yet (need to have external mongoDB setup and github secrets)
+      # - name: Run Tests Backend
+      #   run: pnpm run test
+      #   working-directory: ./backend
