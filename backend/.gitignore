@@ -128,10 +128,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-.env
-
-# pnpm uses npm for publishing a new version with
-# dependencies bundled but the npm lockfile is not needed
-# because pnpm use pnpm for installation
-package-lock.json
