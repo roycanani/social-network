@@ -37,6 +37,7 @@ jobs:
         run: pnpm run lint
         working-directory: ./backend
 
-      - name: Run Tests Backend
-        run: pnpm run test
-        working-directory: ./backend
+      # Don't Run tests in the process yet (need to have external mongoDB setup and github secrets)
+      # - name: Run Tests Backend
+      #   run: pnpm run test
+      #   working-directory: ./backend
