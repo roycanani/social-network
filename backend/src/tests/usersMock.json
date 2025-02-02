@@ -1,0 +1,26 @@
+[
+    {
+        "userName": "urishiber",
+        "email": "test@user.com",
+        "password": "testpassword"
+    },
+    {
+        "email": "uri@gmail.com",
+        "password": "Aa1234567890",
+        "gender": "male",
+        "userName": "uri123456",
+        "firstName": "uri",
+        "lastName" : "shiber",
+        "phone_number": "0545325447",
+        "date_of_birth": "2019-01-16"
+    },
+    {
+        "email": "uris@gmail.com",
+        "password": "Aa1234567890",
+        "gender": "male"
+    },
+    {
+        "email": "shiber@gmail.com",
+        "password": "Aa1234567890"
+    }
+]
