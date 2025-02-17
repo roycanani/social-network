@@ -2,6 +2,8 @@ import express from "express";
 const router = express.Router();
 import authController from "./controller";
 import passport from "passport";
+import { userModel } from "../users/model";
+import { generateToken } from "../common/jwt";
 
 /**
  * @swagger
@@ -177,13 +179,10 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
+    session: false,
     failureRedirect: "/login",
   }),
-  (req, res) => {
-    // On success, generate your tokens, i.e. call generateToken or similar.
-    // This depends on how you want to handle sessions/tokens.
-    res.redirect("/");
-  }
+  authController.loginOIDC
 );
 
 export default router;
