@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import authController from "./controller";
+import passport from "passport";
 
 /**
  * @swagger
@@ -165,5 +166,24 @@ router.post("/refresh", authController.refresh);
  *         description: Invalid input
  */
 router.post("/logout", authController.logout);
+
+// Initiate Google authentication
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+// Handle callback from Google
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    // On success, generate your tokens, i.e. call generateToken or similar.
+    // This depends on how you want to handle sessions/tokens.
+    res.redirect("/");
+  }
+);
 
 export default router;

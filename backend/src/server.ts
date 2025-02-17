@@ -7,10 +7,13 @@ import swaggerUI from "swagger-ui-express";
 import express, { Express } from "express";
 import { usersRouter } from "./users/route";
 import authRouter from "./auth/route";
+import passport from "passport";
+import "./auth/googleStrategy";
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 

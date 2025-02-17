@@ -10,6 +10,10 @@ export interface User {
 }
 
 const userSchema = new mongoose.Schema<User>({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    auto: true,
+  },
   userName: {
     type: String,
     required: true,
