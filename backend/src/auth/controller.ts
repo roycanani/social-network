@@ -20,6 +20,33 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
+interface Tokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+const loginGenerateTokenValidation = async (
+  res: Response,
+  user: User
+): Promise<Tokens | undefined> => {
+  if (!process.env.SERVER_TOKEN_SECRET) {
+    res.status(500).send("Server Error");
+    return;
+  }
+
+  const tokens = generateToken(user._id.toString());
+  if (!tokens) {
+    res.status(500).send("Server Error");
+    return;
+  }
+  if (!user.refreshToken) {
+    user.refreshToken = [];
+  }
+  user.refreshToken.push(tokens.refreshToken);
+  await user.save();
+  return tokens;
+};
+
 const login = async (req: Request, res: Response) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
@@ -27,31 +54,54 @@ const login = async (req: Request, res: Response) => {
       res.status(400).send("wrong username or password");
       return;
     }
+    const tokens = await loginGenerateTokenValidation(res, user);
 
-    if (!process.env.SERVER_TOKEN_SECRET) {
-      res.status(500).send("Server Error");
-      return;
-    }
-
-    const tokens = generateToken(user._id.toString());
-    if (!tokens) {
-      res.status(500).send("Server Error");
-      return;
-    }
-    if (!user.refreshToken) {
-      user.refreshToken = [];
-    }
-    user.refreshToken.push(tokens.refreshToken);
-    await user.save();
     res.status(200).send({
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      accessToken: tokens?.accessToken,
+      refreshToken: tokens?.refreshToken,
       _id: user._id,
     });
   } catch (err) {
     res.status(400).send(err);
   }
 };
+
+const loginOIDC = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      res.status(400).send("Problem with the login");
+      return;
+    }
+    const userReq = req.user as { email: string };
+    const user = await userModel.findOne({ email: userReq.email });
+    if (!user) {
+      res.status(400).send("Problem with the login");
+      return;
+    }
+
+    const tokens = await loginGenerateTokenValidation(res, user);
+    // res.status(200).send({
+    //   accessToken: tokens?.accessToken,
+    //   refreshToken: tokens?.refreshToken,
+    //   _id: user._id,
+    // });
+    res.redirect(
+      `http://localhost:3001/google-login?accessToken=${tokens?.accessToken}&refreshToken=${tokens?.refreshToken}&_id=${user._id}`
+    );
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+import { Document } from "mongoose";
+
+interface User extends Document {
+  _id: string;
+  email: string;
+  userName: string;
+  password: string;
+  refreshToken?: string[];
+}
 
 const logout = async (req: Request, res: Response) => {
   try {
@@ -128,4 +178,5 @@ export default {
   login,
   refresh,
   logout,
+  loginOIDC,
 };

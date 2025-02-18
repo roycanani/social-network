@@ -9,8 +9,15 @@ import { usersRouter } from "./users/route";
 import authRouter from "./auth/route";
 import passport from "passport";
 import "./auth/googleStrategy";
+import cors from "cors";
 
 const app = express();
+// Or, enable CORS for specific origins
+const corsOptions = {
+  origin: "http://localhost:3001", // Replace with your frontend origin
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());

@@ -14,7 +14,11 @@ passport.use(
         let user = await userModel.findOne({ email: profile._json.email });
 
         if (!user) {
-          user = await userModel.create({});
+          console.log("user creatin", profile._json);
+          user = await userModel.create({
+            userName: profile._json.email,
+            email: profile._json.email,
+          });
         }
 
         done(null, user);
