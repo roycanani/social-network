@@ -2,8 +2,6 @@ import express from "express";
 const router = express.Router();
 import authController from "./controller";
 import passport from "passport";
-import { userModel } from "../users/model";
-import { generateToken } from "../common/jwt";
 
 /**
  * @swagger

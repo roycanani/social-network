@@ -37,6 +37,14 @@ jobs:
         run: pnpm run lint
         working-directory: ./backend
 
+      - name: Install dependencies Frontend
+        run: pnpm install --frozen-lockfile
+        working-directory: ./frontend
+
+      - name: Run Lint Backend
+        run: pnpm run lint
+        working-directory: ./frontend
+
       # Don't Run tests in the process yet (need to have external mongoDB setup and github secrets)
       # - name: Run Tests Backend
       #   run: pnpm run test
