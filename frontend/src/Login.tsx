@@ -6,14 +6,32 @@ const LoginRegister: React.FC = () => {
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isLogin) {
-      // Call backend login API
-      console.log("Logging in...", { email, password });
-    } else {
-      // Call backend registration API
-      console.log("Registering...", { userName, email, password });
+    const endpoint = isLogin ? "/auth/login" : "/auth/register";
+    const data = isLogin ? { email, password } : { userName, email, password };
+
+    try {
+      const response = await fetch(`http://localhost:3000${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Success:", result);
+        // Handle successful login/registration (e.g., store tokens, redirect)
+      } else {
+        const error = await response.json();
+        console.error("Error:", error);
+        // Handle error (e.g., display error message)
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+      // Handle network errors
     }
   };
 

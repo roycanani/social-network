@@ -80,11 +80,14 @@ const loginOIDC = async (req: Request, res: Response) => {
     }
 
     const tokens = await loginGenerateTokenValidation(res, user);
-    res.status(200).send({
-      accessToken: tokens?.accessToken,
-      refreshToken: tokens?.refreshToken,
-      _id: user._id,
-    });
+    // res.status(200).send({
+    //   accessToken: tokens?.accessToken,
+    //   refreshToken: tokens?.refreshToken,
+    //   _id: user._id,
+    // });
+    res.redirect(
+      `http://localhost:3001/google-login?accessToken=${tokens?.accessToken}&refreshToken=${tokens?.refreshToken}&_id=${user._id}`
+    );
   } catch (err) {
     res.status(400).send(err);
   }
