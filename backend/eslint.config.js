@@ -1,31 +1,29 @@
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports */
+const typescriptEslint = require("@typescript-eslint/eslint-plugin");
+const tsParser = require("@typescript-eslint/parser");
+const js = require("@eslint/js");
+const { FlatCompat } = require("@eslint/eslintrc");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });
 
-export default [
+module.exports = [
   ...compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"
   ),
   {
+    ignores: ["**/node_modules/**", "**/eslint.config.js"],
     plugins: {
       "@typescript-eslint": typescriptEslint,
     },
 
     languageOptions: {
       globals: {},
-
       parser: tsParser,
       ecmaVersion: "latest",
       sourceType: "module",
@@ -34,11 +32,11 @@ export default [
     rules: {},
   },
   {
-    files: ["**/.eslintrc.{js,cjs}"],
+    files: ["**/*.ts"],
+    ignores: ["**/node_modules/**", "**/eslint.config.js"],
 
     languageOptions: {
       globals: {},
-
       ecmaVersion: 5,
       sourceType: "commonjs",
     },
