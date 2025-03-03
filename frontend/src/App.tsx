@@ -3,11 +3,10 @@ import SignIn from "./pages/SignIn";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { useEffect, useState } from "react";
-import { useAuth, useAuthDispatch } from "./auth.context";
+import { useAuthDispatch } from "./auth.context";
 import { postAuthRefresh } from "./auth/auth";
 
 function App() {
-  const token = useAuth();
   const setToken = useAuthDispatch();
   const [loadingUser, setLoadingUser] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
