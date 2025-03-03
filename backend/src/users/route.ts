@@ -55,8 +55,14 @@ export const usersRouter = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/User'
+ *     security:
+ *       - bearerAuth: []
  */
-usersRouter.get("/", usersController.getAll.bind(usersController));
+usersRouter.get(
+  "/",
+  authMiddleware,
+  usersController.getAll.bind(usersController)
+);
 
 /**
  * @swagger
@@ -80,8 +86,14 @@ usersRouter.get("/", usersController.getAll.bind(usersController));
  *               $ref: '#/components/schemas/User'
  *       404:
  *         description: User not found
+ *     security:
+ *       - bearerAuth: []
  */
-usersRouter.get("/:id", usersController.getById.bind(usersController));
+usersRouter.get(
+  "/:id",
+  authMiddleware,
+  usersController.getById.bind(usersController)
+);
 
 /**
  * @swagger

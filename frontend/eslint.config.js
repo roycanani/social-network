@@ -4,7 +4,13 @@ const parserTypescript = require("@typescript-eslint/parser");
 
 module.exports = [
   {
-    ignores: ["**/node_modules/**", "eslint.config.js"],
+    ignores: [
+      "**/node_modules/**",
+      "eslint.config.js",
+      "**/src/components/ui/**",
+      "**.config.js",
+      "**/build/**",
+    ],
   },
   js.configs.recommended,
   {
@@ -30,11 +36,17 @@ module.exports = [
         fetch: "readonly",
       },
     },
-
     plugins: {
       "@typescript-eslint": tsEslintPlugin,
     },
-    files: ["**/*.ts", "**/*.tsx"],
+    settings: {
+      "import/resolver": {
+        typescript: {
+          project: "./tsconfig.json",
+        },
+      },
+    },
+    files: ["**/src/*.ts", "**/src/*.tsx"],
     rules: {
       ...tsEslintPlugin.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": "warn",
