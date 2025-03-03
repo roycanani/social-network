@@ -12,23 +12,61 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../components/ui/form";
 import { Checkbox } from "../components/ui/checkbox";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
+import { postAuthLogin } from "../auth/auth";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useAuthDispatch } from "../auth.context";
+
+const FormSchema = z.object({
+  email: z.string().email({
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleEmailLogin = async (data: z.infer<typeof FormSchema>) => {
     setIsLoading(true);
     setError("");
 
     try {
       // Implement your email login logic here
       // eslint-disable-next-line no-undef
+      const { accessToken, refreshToken } = (
+        await postAuthLogin({ email: data.email, password: data.password })
+      ).data;
+      if (!accessToken || !refreshToken) {
+        throw new Error("Invalid response from server");
+      }
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
     } catch (err) {
       setError("Failed to login. Please try again.");
@@ -101,45 +139,64 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-
-          <form onSubmit={handleEmailLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m..example.com"
-                required
-                disabled={isLoading}
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleEmailLogin)}
+              className="space-y-4"
+            >
+              <div className="space-y-2" />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="m@example.com"
+                        id="email"
+                        type="email"
+                        required
+                        disabled={isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                disabled={isLoading}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="password"
+                        type="password"
+                        required
+                        disabled={isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      This is your public display name.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
+              <div className="space-y-2" />
 
-            <div className="flex items-center space-x-2">
-              <Checkbox id="remember" />
-              <label
-                htmlFor="remember"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Remember me
-              </label>
-            </div>
+              {error && <div className="text-sm text-red-500">{error}</div>}
 
-            {error && <div className="text-sm text-red-500">{error}</div>}
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign in with Email
-            </Button>
-          </form>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Sign in with Email
+              </Button>
+            </form>
+          </Form>
         </CardContent>
         <CardFooter>
           <div className="text-sm text-center w-full">

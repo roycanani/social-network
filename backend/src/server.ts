@@ -39,6 +39,10 @@ const options = {
 };
 const specs = swaggerJSDoc(options);
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
+app.get("/openapi.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(specs);
+});
 
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
