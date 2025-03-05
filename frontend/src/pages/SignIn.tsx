@@ -1,8 +1,6 @@
-import type React from "react";
-
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -21,9 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../components/ui/form";
-import { Checkbox } from "../components/ui/checkbox";
 import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { postAuthLogin } from "../auth/auth";
 import { z } from "zod";
@@ -43,6 +39,8 @@ const FormSchema = z.object({
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const navigte = useNavigate();
+  const setToken = useAuthDispatch();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -55,19 +53,19 @@ export default function LoginPage() {
   const handleEmailLogin = async (data: z.infer<typeof FormSchema>) => {
     setIsLoading(true);
     setError("");
-
     try {
-      // Implement your email login logic here
-      // eslint-disable-next-line no-undef
       const { accessToken, refreshToken } = (
         await postAuthLogin({ email: data.email, password: data.password })
       ).data;
       if (!accessToken || !refreshToken) {
         throw new Error("Invalid response from server");
       }
+      console.log("accessToken", accessToken);
+      console.log("refreshToken", refreshToken);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+      setToken(accessToken);
+      navigte("/");
     } catch (err) {
       setError("Failed to login. Please try again.");
     } finally {
