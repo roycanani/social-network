@@ -21,8 +21,6 @@ function App() {
       try {
         const accessToken = parseJwt(localStorage.getItem("accessToken"));
         const refreshToken = parseJwt(localStorage.getItem("refreshToken"));
-        console.log(accessToken);
-        console.log(Date.now());
         if (accessToken && accessToken.exp * 1000 > Date.now()) {
           setToken(localStorage.getItem("accessToken")!);
           setIsAuthenticated(true);
@@ -85,7 +83,7 @@ function App() {
             {!isAuthenticated ? (
               <>
                 <Route path="/" element={<SignIn />} />
-                <Route path="/signup" element={<Login />} />
+                <Route path="/signup" element={<Home />} />
                 <Route path="/oidc-login" element={<GoogleLogin />} />
               </>
             ) : (

@@ -60,8 +60,6 @@ export default function LoginPage() {
       if (!accessToken || !refreshToken) {
         throw new Error("Invalid response from server");
       }
-      console.log("accessToken", accessToken);
-      console.log("refreshToken", refreshToken);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       setToken(accessToken);
