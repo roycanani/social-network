@@ -3,37 +3,31 @@ import SignIn from "./pages/SignIn";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { useEffect, useState } from "react";
-import { useAuthDispatch } from "./auth.context";
+import { useAuthDispatch, useAuth } from "./auth.context";
 import { postAuthRefresh } from "./auth/auth";
+import { parseJwt } from "./lib/utils";
+import GoogleLogin from "./pages/OIDCLogin";
 
 function App() {
   const setToken = useAuthDispatch();
+  const token = useAuth();
   const [loadingUser, setLoadingUser] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    console.log("first");
     const validateToken = async () => {
       setLoadingUser(true);
 
       try {
-        const accessToken = localStorage.getItem("accessToken");
-        const refreshToken = localStorage.getItem("refreshToken");
-        console.log("first1");
-        if (
-          accessToken &&
-          JSON.parse(accessToken ?? "").expiresIn > Date.now()
-        ) {
-          console.log("first2");
-          // We have a token, set it in auth context
-          setToken(accessToken);
+        const accessToken = parseJwt(localStorage.getItem("accessToken"));
+        const refreshToken = parseJwt(localStorage.getItem("refreshToken"));
+        if (accessToken && accessToken.exp * 1000 > Date.now()) {
+          setToken(localStorage.getItem("accessToken")!);
           setIsAuthenticated(true);
-        } else if (
-          refreshToken &&
-          JSON.parse(refreshToken ?? "").expiresIn > Date.now()
-        ) {
-          console.log("first3");
-          const response = await postAuthRefresh({ refreshToken });
+        } else if (refreshToken && refreshToken.exp * 1000 > Date.now()) {
+          const response = await postAuthRefresh({
+            refreshToken: localStorage.getItem("refreshToken")!,
+          });
 
           if (response.data) {
             localStorage.setItem(
@@ -54,7 +48,6 @@ function App() {
             setIsAuthenticated(false);
           }
         } else {
-          console.log("first4");
           setIsAuthenticated(false);
         }
       } catch (error) {
@@ -70,7 +63,7 @@ function App() {
     };
 
     validateToken();
-  }, [setToken]);
+  }, [setToken, token]);
 
   return (
     <Router>
@@ -90,7 +83,8 @@ function App() {
             {!isAuthenticated ? (
               <>
                 <Route path="/" element={<SignIn />} />
-                <Route path="/signup" element={<Login />} />
+                <Route path="/signup" element={<Home />} />
+                <Route path="/oidc-login" element={<GoogleLogin />} />
               </>
             ) : (
               <>
