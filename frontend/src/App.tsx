@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuthDispatch, useAuth } from "./auth.context";
 import { postAuthRefresh } from "./auth/auth";
 import { parseJwt } from "./lib/utils";
+import GoogleLogin from "./pages/OIDCLogin";
 
 function App() {
   const setToken = useAuthDispatch();
@@ -14,7 +15,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    console.log("effect");
     const validateToken = async () => {
       setLoadingUser(true);
 
@@ -86,6 +86,7 @@ function App() {
               <>
                 <Route path="/" element={<SignIn />} />
                 <Route path="/signup" element={<Login />} />
+                <Route path="/oidc-login" element={<GoogleLogin />} />
               </>
             ) : (
               <>

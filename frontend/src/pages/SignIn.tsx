@@ -78,9 +78,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Implement your Google login logic here
-      // eslint-disable-next-line no-undef
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+      window.location.href = "http://localhost:3000/auth/google";
     } catch (err) {
       setError("Failed to login with Google. Please try again.");
     } finally {
