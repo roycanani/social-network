@@ -34,10 +34,12 @@ export function Navbar() {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <Button size="sm" className="gap-1 hidden sm:flex">
-            <Plus className="h-4 w-4" />
-            New Pet Post
-          </Button>
+          <Link to="create-post">
+            <Button size="sm" className="gap-1 hidden sm:flex">
+              <Plus className="h-4 w-4" />
+              New Pet Post
+            </Button>
+          </Link>
 
           <Button size="icon" variant="ghost" className="sm:hidden">
             <Plus className="h-5 w-5" />

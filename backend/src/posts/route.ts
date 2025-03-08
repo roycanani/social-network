@@ -1,5 +1,5 @@
 import express from "express";
-const router = express.Router();
+export const postsRouter = express.Router();
 import postsController from "./controller";
 import { authMiddleware } from "../auth/controller";
 
@@ -82,7 +82,7 @@ import { authMiddleware } from "../auth/controller";
  *               items:
  *                 $ref: '#/components/schemas/Post'
  */
-router.get("/", postsController.getAll.bind(postsController));
+postsRouter.get("/", postsController.getAll.bind(postsController));
 
 /**
  * @swagger
@@ -107,7 +107,7 @@ router.get("/", postsController.getAll.bind(postsController));
  *       404:
  *         description: Post not found
  */
-router.get("/:id", postsController.getById.bind(postsController));
+postsRouter.get("/:id", postsController.getById.bind(postsController));
 
 /**
  * @swagger
@@ -129,7 +129,11 @@ router.get("/:id", postsController.getById.bind(postsController));
  *     security:
  *       - bearerAuth: []
  */
-router.post("/", authMiddleware, postsController.create.bind(postsController));
+postsRouter.post(
+  "/",
+  authMiddleware,
+  postsController.create.bind(postsController)
+);
 
 /**
  * @swagger
@@ -152,7 +156,7 @@ router.post("/", authMiddleware, postsController.create.bind(postsController));
  *     security:
  *       - bearerAuth: []
  */
-router.delete(
+postsRouter.delete(
   "/:id",
   authMiddleware,
   postsController.delete.bind(postsController)
@@ -187,10 +191,8 @@ router.delete(
  *     security:
  *       - bearerAuth: []
  */
-router.put(
+postsRouter.put(
   "/:id",
   authMiddleware,
   postsController.update.bind(postsController)
 );
-
-export default router;

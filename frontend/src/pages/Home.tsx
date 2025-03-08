@@ -1,12 +1,9 @@
-import React from "react";
-
-const Home: React.FC = () => {
+export default function Home() {
   return (
-    <div>
-      <h1>Welcome to the Social Network</h1>
-      <p>This is the home page of our social network application.</p>
+    <div className="container mx-auto py-8 px-4">
+      <div className="text-center py-12 text-muted-foreground">
+        <p>Your posts will appear here.</p>
+      </div>
     </div>
   );
-};
-
-export default Home;
+}
