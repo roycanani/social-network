@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthDispatch } from "../auth.context";
 
-const GoogleLoginPage: React.FC = () => {
+const GoogleLogin: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setToken } = useAuthDispatch();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -12,26 +14,23 @@ const GoogleLoginPage: React.FC = () => {
     const userId = searchParams.get("_id");
 
     if (accessToken && refreshToken && userId) {
-      // Store the tokens in local storage or cookies
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userId", userId);
 
-      // Redirect to the desired page
-      navigate("/home");
+      setToken(accessToken);
+      navigate("/feed");
     } else {
-      // Handle the case where tokens are missing
       console.error("Tokens missing from URL");
       navigate("/login");
     }
-  }, [location, navigate]);
+  }, [location, navigate, setToken]);
 
   return (
     <div>
       <h1>Logging in with Google...</h1>
-      {/* You can add a loading spinner or message here */}
     </div>
   );
 };
 
-export default GoogleLoginPage;
+export default GoogleLogin;

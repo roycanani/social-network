@@ -1,14 +1,24 @@
 import jwt from "jsonwebtoken";
 import { User, userModel } from "../users/model";
 import { Document } from "mongoose";
+import { StringValue } from "ms";
 
 type JWTToken = {
   accessToken: string;
   refreshToken: string;
 };
 
-export const generateToken = (userId: string): JWTToken | null => {
-  if (!process.env.SERVER_TOKEN_SECRET || !process.env.TOKEN_EXPIRES) {
+export const generateToken = (
+  userId: string,
+  username: string,
+  email: string,
+  image: string
+): JWTToken | null => {
+  if (
+    !process.env.SERVER_TOKEN_SECRET ||
+    !process.env.TOKEN_EXPIRES ||
+    !process.env.REFRESH_TOKEN_EXPIRES
+  ) {
     return null;
   }
   // generate token
@@ -17,9 +27,12 @@ export const generateToken = (userId: string): JWTToken | null => {
     {
       _id: userId,
       random: random,
+      username: username,
+      email: email,
+      image: image,
     },
     process.env.SERVER_TOKEN_SECRET,
-    { expiresIn: parseInt(process.env.TOKEN_EXPIRES, 10) }
+    { expiresIn: process.env.TOKEN_EXPIRES as StringValue }
   );
 
   const refreshToken = jwt.sign(
@@ -28,7 +41,7 @@ export const generateToken = (userId: string): JWTToken | null => {
       random: random,
     },
     process.env.SERVER_TOKEN_SECRET,
-    { expiresIn: parseInt(process.env.TOKEN_EXPIRES, 10) }
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRES as StringValue }
   );
   return {
     accessToken,

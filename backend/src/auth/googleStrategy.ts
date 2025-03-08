@@ -11,17 +11,25 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await userModel.findOne({ email: profile._json.email });
+        const user = await userModel.findOne({ email: profile._json.email });
 
         if (!user) {
           console.log("user creatin", profile._json);
-          user = await userModel.create({
+          const createdUser = await userModel.create({
             userName: profile._json.email,
             email: profile._json.email,
+            image: profile._json.picture,
           });
-        }
+          done(null, createdUser);
+        } else {
+          console.log("Update user details from google");
+          const updatedUser = await userModel.findOneAndUpdate(
+            { email: profile._json.email },
+            { image: profile._json.picture }
+          );
 
-        done(null, user);
+          done(null, updatedUser!);
+        }
       } catch (err) {
         done(err, undefined);
       }
