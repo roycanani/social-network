@@ -14,16 +14,13 @@ const GoogleLogin: React.FC = () => {
     const userId = searchParams.get("_id");
 
     if (accessToken && refreshToken && userId) {
-      // Store the tokens in local storage or cookies
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("userId", userId);
 
       setToken(accessToken);
-      // Redirect to the desired page
-      navigate("/");
+      navigate("/feed");
     } else {
-      // Handle the case where tokens are missing
       console.error("Tokens missing from URL");
       navigate("/login");
     }
@@ -32,7 +29,6 @@ const GoogleLogin: React.FC = () => {
   return (
     <div>
       <h1>Logging in with Google...</h1>
-      {/* You can add a loading spinner or message here */}
     </div>
   );
 };
