@@ -8,6 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 interface Token {
   iat: number;
   exp: number;
+  username: string;
+  email: string;
+  image: string;
 }
 
 export function parseJwt(token: string | null): Token | undefined {

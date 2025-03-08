@@ -1,15 +1,22 @@
 import SignIn from "./pages/SignIn";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import { useEffect, useState } from "react";
 import { useAuthDispatch, useAuth } from "./auth.context";
 import { postAuthRefresh } from "./auth/auth";
 import { parseJwt } from "./lib/utils";
 import GoogleLogin from "./pages/OIDCLogin";
+import { Navbar } from "./components/navbar";
+import NotFound from "./pages/NotFound";
 
 function App() {
-  const setToken = useAuthDispatch();
-  const token = useAuth();
+  const { setToken } = useAuthDispatch();
+  const { token } = useAuth();
   const [loadingUser, setLoadingUser] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -62,11 +69,12 @@ function App() {
     };
 
     validateToken();
-  }, [setToken, token]);
+    // eslint-disable-next-line
+  }, [token]);
 
   return (
     <Router>
-      {/* {user && <Navbar />} */}
+      {isAuthenticated && !loadingUser && <Navbar />}
 
       <div
         className="d-flex justify-content-center align-items-center"
@@ -82,13 +90,15 @@ function App() {
             {!isAuthenticated ? (
               <>
                 <Route path="/" element={<SignIn />} />
-                <Route path="/signup" element={<Home />} />
                 <Route path="/oidc-login" element={<GoogleLogin />} />
+                <Route path="/*" element={<Navigate to="/" replace />} />
               </>
             ) : (
               <>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Navigate to="/feed" replace />} />{" "}
+                <Route path="/feed" element={<Home />} />
                 <Route path="/login" element={<SignIn />} />
+                <Route path="*" element={<NotFound />} />{" "}
                 {/* <Route path="/add-post" element={<AddPost></AddPost>} /> */}
                 {/* <Route path="/profile" element={<Profile></Profile>} /> */}
                 {/* <Route path="/post/:id" element={<PostDetails></PostDetails>} /> */}
