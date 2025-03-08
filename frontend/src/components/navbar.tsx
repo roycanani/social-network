@@ -1,4 +1,4 @@
-import { Bell, Home, LogOut, Menu, PawPrint, Plus, User } from "lucide-react";
+import { Home, LogOut, Plus, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -10,13 +10,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useAuth } from "../auth.context";
 
 export function Navbar() {
+  const { user } = useAuth();
+
+  console.log(user?.image);
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center px-4">
         <Link to={{ pathname: "/feed" }} className="flex items-center gap-2">
-          <img src="/logo512.png" className="w-16 text-primary" />
+          <img src="/logo512.png" className="w-16 text-primary" alt="petbook" />
         </Link>
 
         <div className="flex items-center md:gap-6 ml-6">
@@ -44,11 +48,10 @@ export function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src="/placeholder.svg?height=32&width=32"
-                    alt="User"
-                  />
-                  <AvatarFallback>UP</AvatarFallback>
+                  <AvatarImage src={user?.image} alt="User" />
+                  <AvatarFallback>
+                    {user?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

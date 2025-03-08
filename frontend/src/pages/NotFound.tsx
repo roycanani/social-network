@@ -1,5 +1,3 @@
-import { PawPrint } from "lucide-react";
-
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 

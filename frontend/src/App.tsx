@@ -15,8 +15,8 @@ import { Navbar } from "./components/navbar";
 import NotFound from "./pages/NotFound";
 
 function App() {
-  const setToken = useAuthDispatch();
-  const token = useAuth();
+  const { setToken } = useAuthDispatch();
+  const { token } = useAuth();
   const [loadingUser, setLoadingUser] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -69,7 +69,8 @@ function App() {
     };
 
     validateToken();
-  }, [setToken, token]);
+    // eslint-disable-next-line
+  }, [token]);
 
   return (
     <Router>
@@ -89,8 +90,8 @@ function App() {
             {!isAuthenticated ? (
               <>
                 <Route path="/" element={<SignIn />} />
-                <Route path="/signup" element={<Home />} />
                 <Route path="/oidc-login" element={<GoogleLogin />} />
+                <Route path="/*" element={<Navigate to="/" replace />} />
               </>
             ) : (
               <>

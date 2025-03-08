@@ -5,7 +5,7 @@ import { useAuthDispatch } from "../auth.context";
 const GoogleLogin: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const setToken = useAuthDispatch();
+  const { setToken } = useAuthDispatch();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -24,7 +24,7 @@ const GoogleLogin: React.FC = () => {
       console.error("Tokens missing from URL");
       navigate("/login");
     }
-  }, [location, navigate]);
+  }, [location, navigate, setToken]);
 
   return (
     <div>

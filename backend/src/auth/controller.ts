@@ -34,7 +34,12 @@ const loginGenerateTokenValidation = async (
     return;
   }
 
-  const tokens = generateToken(user._id.toString());
+  const tokens = generateToken(
+    user._id.toString(),
+    user.userName,
+    user.email,
+    user.image
+  );
   if (!tokens) {
     res.status(500).send("Server Error");
     return;
@@ -72,7 +77,7 @@ const loginOIDC = async (req: Request, res: Response) => {
       res.status(400).send("Problem with the login");
       return;
     }
-    const userReq = req.user as { email: string };
+    const userReq = req.user as { email: string; picture: string };
     const user = await userModel.findOne({ email: userReq.email });
     if (!user) {
       res.status(400).send("Problem with the login");
@@ -80,11 +85,6 @@ const loginOIDC = async (req: Request, res: Response) => {
     }
 
     const tokens = await loginGenerateTokenValidation(res, user);
-    // res.status(200).send({
-    //   accessToken: tokens?.accessToken,
-    //   refreshToken: tokens?.refreshToken,
-    //   _id: user._id,
-    // });
     res.redirect(
       `http://localhost:3001/oidc-login?accessToken=${tokens?.accessToken}&refreshToken=${tokens?.refreshToken}&_id=${user._id}`
     );
@@ -100,6 +100,7 @@ interface User extends Document {
   email: string;
   userName: string;
   password: string;
+  image: string;
   refreshToken?: string[];
 }
 
@@ -120,7 +121,12 @@ const refresh = async (req: Request, res: Response) => {
       res.status(400).send("fail");
       return;
     }
-    const tokens = generateToken(user._id);
+    const tokens = generateToken(
+      user._id,
+      user.userName,
+      user.email,
+      user.image
+    );
 
     if (!tokens) {
       res.status(500).send("Server Error");

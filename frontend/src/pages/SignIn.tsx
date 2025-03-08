@@ -40,7 +40,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigte = useNavigate();
-  const setToken = useAuthDispatch();
+  const { setToken } = useAuthDispatch();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center p-4 bg-orange-100 flex-col justify-center">
-      <img src="/logo192.png" className="max-w-48" />
+      <img src="/logo192.png" className="max-w-48" alt="petbook" />
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
