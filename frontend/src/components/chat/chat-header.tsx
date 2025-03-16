@@ -34,7 +34,7 @@ export function ChatHeader({ user }: ChatHeaderProps) {
       </Button>
 
       <Avatar className="h-9 w-9">
-        <AvatarImage src={'user?.image'} alt={user.userName} />
+        <AvatarImage src={"https://avatars.githubusercontent.com/u/118629175?v=4"} alt={user.userName} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
 

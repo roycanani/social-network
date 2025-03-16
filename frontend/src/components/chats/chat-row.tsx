@@ -73,7 +73,7 @@ export function ChatRow({ chat }: ChatRowProps) {
       onClick={handleClick}
     >
       <Avatar className="h-10 w-10">
-        <AvatarImage src={'otherUser?.avatar'} alt={otherUser?.userName} />
+        <AvatarImage src={"https://avatars.githubusercontent.com/u/118629175?v=4" } alt={otherUser?.userName} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
