@@ -14,6 +14,8 @@ import { WebSocketServer } from "ws";
 import http from "http";
 import { chatModel } from "./chats/model";
 import { messageModel } from "./messages/model";
+import { chatsRouter } from "./chats/route";
+import { messagesRouter } from "./messages/route";
 
 const app = express();
 const corsOptions = {
@@ -26,6 +28,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
+app.use('/chats', chatsRouter);
+app.use('/messages', messagesRouter);
 
 const options = {
   definition: {
@@ -80,36 +84,58 @@ const setupWebSocket = (server: http.Server) => {
 
     ws.on("message", async (message) => {
       try {
-        const { chatId, senderId, text } = JSON.parse(message.toString());
+        const { type, chat, sender, content, users } = JSON.parse(message.toString());
 
-        if (!chatId || !senderId || !text) {
-          ws.send(JSON.stringify({ error: "Invalid message format" }));
-          return;
-        }
-
-        // Find or create the chat
-        let chat = await chatModel.findById(chatId);
-        if (!chat) {
-          ws.send(JSON.stringify({ error: "Chat not found" }));
-          return;
-        }
-
-        // Save the new message in DB
-        const newMessage = new messageModel({ chatId, sender: senderId, text });
-        await newMessage.save();
-
-        // Update last message in chat
-        chat.lastMessage = newMessage._id;
-        await chat.save();
-
-        // Broadcast the message to all clients
-        wss.clients.forEach((client) => {
-          if (client !== ws && client.readyState === 1) {
-            client.send(JSON.stringify({ chatId, senderId, text }));
+        if (type === "createChat") {
+          if (!users || users.length === 0) {
+            ws.send(JSON.stringify({ error: "Invalid participants format" }));
+            return;
           }
-        });
 
-        console.log("Message saved and broadcasted.");
+          // Create a new chat
+          const newChat = new chatModel({ users });
+          await newChat.save();
+
+          // Broadcast the message to all clients
+          wss.clients.forEach((client) => {
+            if (client.readyState === 1) {
+              client.send(JSON.stringify({ type: "createChat", users }));
+            }
+          });
+
+          console.log("Chat created and broadcasted.");
+        } else if (type === "sendMessage") {
+          if (!chat || !sender || !content) {
+            ws.send(JSON.stringify({ error: "Invalid message format" }));
+            return;
+          }
+
+          // Find or create the chat
+          let referencedChat = await chatModel.findById(chat);
+          if (!referencedChat) {
+            ws.send(JSON.stringify({ error: "Chat not found" }));
+          return;
+          }
+
+          // Save the new message in DB
+          const newMessage = new messageModel({ chat, sender, content });
+          await newMessage.save();
+
+          // Update last message in chat
+          referencedChat.lastMessage = newMessage._id.toString();
+          await referencedChat.save();
+
+          // Broadcast the message to all clients
+          wss.clients.forEach((client) => {
+            if (client.readyState === 1) {
+              client.send(JSON.stringify({ type: "sendMessage", _id: newMessage._id, chat, sender, content, createdAt: newMessage.createdAt }));
+            }
+          });
+
+          console.log("Message saved and broadcasted.");
+        } else {
+          ws.send(JSON.stringify({ error: "Unknown message type" }));
+        }
       } catch (error) {
         console.error("Error processing message:", error);
         ws.send(JSON.stringify({ error: "Server error" }));

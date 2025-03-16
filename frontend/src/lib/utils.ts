@@ -11,6 +11,7 @@ interface Token {
   username: string;
   email: string;
   image: string;
+  _id?: string;
 }
 
 export function parseJwt(token: string | null): Token | undefined {

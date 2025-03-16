@@ -10,5 +10,5 @@ export default function ChatPage() {
     return <div>Invalid chat ID</div>
   }
 
-  return <ChatInterface userId={id} />
+  return <ChatInterface chatId={id} />
 }

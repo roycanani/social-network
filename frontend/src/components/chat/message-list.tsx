@@ -3,10 +3,11 @@ import { Message } from "./message"
 
 interface MessageListProps {
   messages: {
-    id: string
-    senderId: string
-    text: string
-    timestamp: string
+    _id?: string
+    chat: string;
+    sender: string;
+    content: string;
+    createdAt: Date;
   }[]
   currentUserId: string
   messagesEndRef: RefObject<HTMLDivElement>
@@ -24,7 +25,7 @@ export function MessageList({ messages, currentUserId, messagesEndRef }: Message
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.map((message) => (
-        <Message key={message.id} message={message} isOwn={message.senderId === currentUserId} />
+        <Message key={message._id} message={message} isOwn={message.sender === currentUserId} />
       ))}
       <div ref={messagesEndRef} />
     </div>

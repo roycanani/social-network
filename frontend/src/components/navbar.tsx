@@ -15,7 +15,6 @@ import { useAuth } from "../auth.context";
 export function Navbar() {
   const { user } = useAuth();
 
-  console.log(user?.image);
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center px-4">

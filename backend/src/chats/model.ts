@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 export interface Chat {
-  users: mongoose.Types.ObjectId[]; // List of user IDs
-  lastMessage?: mongoose.Types.ObjectId; // Latest message reference
-  updatedAt: Date;
+    users: string[]; // List of user IDs
+    lastMessage?: string; // Latest message reference
+    updatedAt: Date;
 }
 
 const ChatSchema = new mongoose.Schema<Chat>({

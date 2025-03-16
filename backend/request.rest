@@ -58,3 +58,37 @@ PUT http://localhost:3000/comments/677ec432d954efe3eefc4d2e
 ### Delete Comment
 DELETE http://localhost:3000/comments/677ec432d954efe3eefc4d2e
 
+
+/////// Users ///////
+
+### Get All Users
+GET http://localhost:3000/users
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Q2ODFjNDk1MjYwOWVjZGNiMTRkODUiLCJyYW5kb20iOiIwLjgwNzQ1NjM1NzYwNTg2OTMiLCJpYXQiOjE3NDIxMjgwODEsImV4cCI6MTc0MjczMjg4MX0.HP4GHpR1rKfNrSy42Y4Ky8ByD5f0jA-74i5kB6_7ZmM
+
+/////// Chats ///////
+
+### Get All Chats
+GET http://localhost:3000/chats
+
+### Create Chat
+POST http://localhost:3000/chats
+Content-Type: application/json
+
+{
+  "users": ["67d681c4952609ecdcb14d85", "679220de322934e02cb0f9cc"]
+}
+
+/////// Messages ///////
+
+### Get All Messages
+GET http://localhost:3000/messages
+
+### Create Message
+POST http://localhost:3000/messages
+Content-Type: application/json
+
+{
+  "chat": "67d71e67198d65dbe93c1748",
+  "sender": "679220de322934e02cb0f9cc",
+  "content": "Hello World !!!!!!"
+}

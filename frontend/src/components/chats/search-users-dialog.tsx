@@ -1,72 +1,63 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { getUsers } from "../../users/users"
+import { User } from "../../model"
+import { useUsers } from "../../hooks/useUsers"
+import { useSocket } from "../../hooks/useSocket"
+import { useAuth } from "../../auth.context"
 
 interface SearchUsersDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-// Mock data for demonstration
-const MOCK_USERS = [
-  {
-    id: "1",
-    name: "Leslie Alexander",
-    avatar: "/placeholder.svg?height=40&width=40",
-    username: "@leslie",
-  },
-  {
-    id: "2",
-    name: "Dries Vincent",
-    avatar: "/placeholder.svg?height=40&width=40",
-    username: "@dries",
-  },
-  {
-    id: "3",
-    name: "Lindsay Walton",
-    avatar: "/placeholder.svg?height=40&width=40",
-    username: "@lindsay",
-  },
-  {
-    id: "4",
-    name: "Courtney Henry",
-    avatar: "/placeholder.svg?height=40&width=40",
-    username: "@courtney",
-  },
-]
-
 export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps) {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<typeof MOCK_USERS>([])
+  const [searchResults, setSearchResults] = useState<User[]>([])
+  const { allUsers, loading, error } = useUsers();
+  const user = useAuth();
+  const currentUser = useAuth()
+  const socket = useSocket();
+
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
 
-    // In a real app, you would search users from an API
     if (query.trim() === "") {
       setSearchResults([])
       return
     }
 
-    // Filter mock users based on search query
-    const filteredUsers = MOCK_USERS.filter(
+    // Filter users based on search query
+    const filteredUsers = allUsers.filter(
       (user) =>
-        user.name.toLowerCase().includes(query.toLowerCase()) ||
-        user.username.toLowerCase().includes(query.toLowerCase()),
+        user.userName!.toLowerCase().includes(query.toLowerCase()) &&
+        user._id !== currentUser.user?._id,
     )
 
     setSearchResults(filteredUsers)
   }
 
-  const startChat = (userId: string) => {
+  const startChat = (searchResultUserId: string) => {
+    // send ws message to start chat
+    const newMessage = {
+      users: [user.user?._id, searchResultUserId],
+    }
+
+    // Send the message via WebSocket
+    if (socket) {
+      socket.send(JSON.stringify({ type: "createChat", ...newMessage }))
+    }
+    
     // Navigate to the chat with this user
-    navigate(`/chat/${userId}`)
+    navigate(`/chat/${searchResultUserId}`)
     onOpenChange(false)
   }
 
@@ -86,19 +77,26 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
           />
         </div>
         <div className="mt-2 max-h-72 overflow-y-auto">
-          {searchResults.length === 0 && searchQuery !== "" ? (
+        {loading ? (
+            <p className="text-center py-4 text-sm text-muted-foreground">Loading users...</p>
+          ) : error ? (
+            <p className="text-center py-4 text-sm text-muted-foreground">Error: {error}</p>
+          ) : searchResults.length === 0 && searchQuery !== "" ? (
             <p className="text-center py-4 text-sm text-muted-foreground">No users found</p>
           ) : (
-            searchResults.map((user) => (
+            searchResults.map((user, index) => (
               <div
-                key={user.id}
+                key={index}
                 className="flex items-center gap-3 p-3 hover:bg-muted rounded-md cursor-pointer"
-                onClick={() => startChat(user.id)}
+                onClick={() => {
+                  console.log(user._id!)
+                  startChat(user._id!)
+                }}
               >
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
                   <AvatarFallback>
-                    {user.name
+                    {user.userName!
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
@@ -106,8 +104,8 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-medium">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.username}</p>
+                  <p className="text-sm font-medium">{user.userName!}</p>
+                  <p className="text-xs text-muted-foreground">{user.userName!}</p>
                 </div>
               </div>
             ))

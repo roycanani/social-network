@@ -4,21 +4,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "../ui/button"
 import { useNavigate } from "react-router-dom"
+import { User } from "../../model"
 
 interface ChatHeaderProps {
-  user: {
-    id: string
-    name: string
-    avatar: string
-    status: "online" | "offline" | "away"
-  }
+  user: User
 }
 
 export function ChatHeader({ user }: ChatHeaderProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const status = "online";
 
   // Get initials for avatar fallback
-  const initials = user.name
+  const initials = user.userName!
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -37,20 +34,20 @@ export function ChatHeader({ user }: ChatHeaderProps) {
       </Button>
 
       <Avatar className="h-9 w-9">
-        <AvatarImage src={user.avatar} alt={user.name} />
+        <AvatarImage src={'user?.image'} alt={user.userName} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
 
       <div className="flex flex-col">
-        <h2 className="text-sm font-medium">{user.name}</h2>
+        <h2 className="text-sm font-medium">{user.userName}</h2>
         <div className="flex items-center gap-1.5">
           <div
             className={`w-2 h-2 rounded-full ${
-              user.status === "online" ? "bg-green-500" : user.status === "away" ? "bg-yellow-500" : "bg-gray-400"
+              status === "online" ? "bg-green-500" : status === "away" ? "bg-yellow-500" : "bg-gray-400"
             }`}
           />
           <span className="text-xs text-muted-foreground">
-            {user.status === "online" ? "Online" : user.status === "away" ? "Away" : "Offline"}
+            {status === "online" ? "Online" : status === "away" ? "Away" : "Offline"}
           </span>
         </div>
       </div>

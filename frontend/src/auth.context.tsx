@@ -41,6 +41,7 @@ const AuthProvider = ({
         email: tokenUser?.email || "",
         image: tokenUser?.image || "",
         userName: tokenUser?.username || "",
+        _id: tokenUser?._id || "",
       },
     });
   };
