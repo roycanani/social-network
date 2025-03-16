@@ -1,9 +1,11 @@
+import { Feed } from "../components/feed";
+
 export default function Home() {
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="text-center py-12 text-muted-foreground">
-        <p>Your posts will appear here.</p>
+    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-8">
+      <div className="w-full max-w-md mx-auto">
+        <Feed />
       </div>
-    </div>
+    </main>
   );
 }

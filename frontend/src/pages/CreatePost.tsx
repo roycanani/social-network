@@ -4,26 +4,26 @@ import type React from "react";
 
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from ".././components/ui/button";
-import { Input } from ".././components/ui/input";
-import { Textarea } from ".././components/ui/textarea";
-import { Label } from ".././components/ui/label";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Label } from "../components/ui/label";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from ".././components/ui/card";
+} from "../components/ui/card";
 import { Camera, Upload, X, Send } from "lucide-react";
 import axios from "axios";
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [sender, setSender] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,6 +32,9 @@ export default function CreatePost() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file);
+
+      // Optional: Generate a preview for the UI
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -65,9 +68,16 @@ export default function CreatePost() {
       // Draw video frame to canvas
       context?.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Convert canvas to data URL
-      const imageDataUrl = canvas.toDataURL("image/png");
-      setImagePreview(imageDataUrl);
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], "photo.png", { type: "image/png" });
+          setImageFile(file);
+
+          // Optional: Generate a preview for the UI
+          const imageDataUrl = URL.createObjectURL(blob);
+          setImagePreview(imageDataUrl);
+        }
+      });
 
       // Stop camera stream
       const stream = video.srcObject as MediaStream;
@@ -96,31 +106,21 @@ export default function CreatePost() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Here you would typically send the data to your backend
-    // For demonstration, we'll just log it and simulate a redirect
-    console.log({
-      title,
-      content,
-      sender,
-      image: imagePreview,
-    });
-
+    const formData = new FormData();
+    // formData.append("title", title);
+    // formData.append("content", content);
+    formData.append(
+      "post",
+      JSON.stringify({
+        content,
+        title,
+      })
+    );
+    if (imageFile) {
+      formData.append("file", imageFile); // Attach the image file
+    }
     try {
-      await axios.post(
-        "/posts",
-        {
-          title,
-          content,
-          sender,
-          // image: imagePreview,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post("http://localhost:3000/posts", formData);
       alert("Post created successfully!");
       navigte("/feed"); // Redirect to posts list
     } catch (error) {
@@ -156,17 +156,6 @@ export default function CreatePost() {
                 rows={5}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="sender">Sender</Label>
-              <Input
-                id="sender"
-                placeholder="Your name"
-                value={sender}
-                onChange={(e) => setSender(e.target.value)}
                 required
               />
             </div>

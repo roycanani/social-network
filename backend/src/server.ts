@@ -15,7 +15,7 @@ import cors from "cors";
 const app = express();
 // Or, enable CORS for specific origins
 const corsOptions = {
-  origin: "http://localhost:3001", // Replace with your frontend origin
+  origin: "http://localhost:5000", // Replace with your frontend origin
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
@@ -25,6 +25,7 @@ app.use(passport.initialize());
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 app.use("/auth", authRouter);
+app.use(express.static("public"));
 
 const options = {
   definition: {

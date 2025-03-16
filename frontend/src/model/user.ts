@@ -13,4 +13,5 @@ export interface User {
   email: string;
   /** The email of the user */
   password?: string;
+  image?: string;
 }
