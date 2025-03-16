@@ -99,7 +99,7 @@ const setupWebSocket = (server: http.Server) => {
           // Broadcast the message to all clients
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
-              client.send(JSON.stringify({ type: "createChat", users }));
+              client.send(JSON.stringify({ type: "createChat", users, updatedAt: newChat.updatedAt, _id: newChat._id }));
             }
           });
 

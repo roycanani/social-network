@@ -6,7 +6,6 @@ import { Input } from "../ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { getUsers } from "../../users/users"
 import { User } from "../../model"
 import { useUsers } from "../../hooks/useUsers"
 import { useSocket } from "../../hooks/useSocket"
@@ -55,10 +54,16 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
     if (socket) {
       socket.send(JSON.stringify({ type: "createChat", ...newMessage }))
     }
-    
-    // Navigate to the chat with this user
-    navigate(`/chat/${searchResultUserId}`)
-    onOpenChange(false)
+
+    setTimeout(async () => {
+      const chats = await (await fetch(`http://localhost:3000/chats`)).json();
+      const currentChat = chats.find((chat: any) => chat.users.includes(user.user?._id) && chat.users.includes(searchResultUserId) && (new Date(chat.updatedAt).getTime() > (Date.now() - 5000)));
+      if(currentChat) {
+        // Navigate to the chat with this user
+        navigate(`/chat/${currentChat._id}`)
+      }
+      onOpenChange(false)
+    }, 500)
   }
 
   return (
@@ -77,7 +82,7 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
           />
         </div>
         <div className="mt-2 max-h-72 overflow-y-auto">
-        {loading ? (
+          {loading ? (
             <p className="text-center py-4 text-sm text-muted-foreground">Loading users...</p>
           ) : error ? (
             <p className="text-center py-4 text-sm text-muted-foreground">Error: {error}</p>
