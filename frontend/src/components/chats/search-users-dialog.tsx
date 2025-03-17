@@ -10,6 +10,7 @@ import { User } from "../../model"
 import { useUsers } from "../../hooks/useUsers"
 import { useSocket } from "../../hooks/useSocket"
 import { useAuth } from "../../auth.context"
+import axios from "axios"
 
 interface SearchUsersDialogProps {
   open: boolean
@@ -56,9 +57,14 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
     }
 
     setTimeout(async () => {
-      const chats = await (await fetch(`http://localhost:3000/chats`)).json();
-      const currentChat = chats.find((chat: any) => chat.users.includes(user.user?._id) && chat.users.includes(searchResultUserId) && (new Date(chat.updatedAt).getTime() > (Date.now() - 5000)));
-      if(currentChat) {
+      const { data: chats } = await axios.get("http://localhost:3000/chats")
+      const currentChat = chats.find(
+        (chat: any) =>
+          chat.users.includes(user.user?._id) &&
+          chat.users.includes(searchResultUserId) &&
+          new Date(chat.updatedAt).getTime() > Date.now() - 5000,
+      )
+      if (currentChat) {
         // Navigate to the chat with this user
         navigate(`/chat/${currentChat._id}`)
       }

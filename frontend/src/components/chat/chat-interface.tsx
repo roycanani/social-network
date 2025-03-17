@@ -7,6 +7,7 @@ import { MessageInput } from "./message-input"
 import { useUsers } from "../../hooks/useUsers"
 import { useSocket } from "../../hooks/useSocket"
 import { useAuth } from "../../auth.context"
+import axios from "axios"
 
 interface ChatInterfaceProps {
   chatId: string
@@ -17,7 +18,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   const [otherUser, setOtherUser] = useState<any>(null)
   const [messages, setMessages] = useState<any[]>([])
   const { allUsers, loading, error } = useUsers()
-  const { user } = useAuth();
+  const { user } = useAuth()
   const socket = useSocket()
 
   useEffect(() => {
@@ -26,19 +27,15 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
     // Fetch initial messages from an API
     const fetchMessages = async () => {
       try {
-        const currentChat = await (await fetch(`http://localhost:3000/chats/${chatId}`)).json();
-        const usersInChat = currentChat.users;
-        const otherUserId = usersInChat.find((id: string) => id !== user?._id);
+        const { data: currentChat } = await axios.get(`http://localhost:3000/chats/${chatId}`)
+        const usersInChat = currentChat.users
+        const otherUserId = usersInChat.find((id: string) => id !== user?._id)
 
         const fetchedUser = allUsers.find((u) => u._id === otherUserId)
         setOtherUser(fetchedUser || null)
 
-        const response = await fetch(`http://localhost:3000/chats/${chatId}/messages`) // Replace with your API endpoint
-        if (!response.ok) {
-          throw new Error("Failed to fetch messages")
-        }
-        const data = await response.json()
-        setMessages(data)
+        const { data: messagesData } = await axios.get(`http://localhost:3000/chats/${chatId}/messages`)
+        setMessages(messagesData)
       } catch (error) {
         console.error("Error fetching messages:", error)
       }
@@ -58,7 +55,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
         const newMessage = JSON.parse(event.data)
         if (newMessage.type === "sendMessage") {
           if (newMessage.chat === chatId) {
-            const {type, ...rest} = newMessage;
+            const { type, ...rest } = newMessage
             setMessages((prevMessages) => [...prevMessages, rest])
           }
         }
@@ -67,9 +64,9 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
 
     return () => {
       if (socket) {
-        socket.onmessage = null;
+        socket.onmessage = null
       }
-    };
+    }
   }, [socket, chatId])
 
   const handleSendMessage = (text: string) => {
@@ -125,4 +122,3 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
     </div>
   )
 }
-

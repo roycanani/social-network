@@ -8,6 +8,7 @@ import { use, useEffect, useState } from "react"
 import { User } from "../../model"
 import { useAuth } from "../../auth.context"
 import { getUsersId } from "../../users/users"
+import axios from "axios"
 
 interface Chat {
   _id?: string;
@@ -40,12 +41,9 @@ export function ChatRow({ chat }: ChatRowProps) {
     }
     const fetchLastMessage = async () => {
       if(chat.lastMessage) {
-        const response = await fetch(`http://localhost:3000/messages/${chat.lastMessage}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch messages")
-        }
-        const data = await response.json()
-        setLastMessageContent(data.content)
+        const response = await axios.get(`http://localhost:3000/messages/${chat.lastMessage}`);
+
+        setLastMessageContent(response.data.content)
       }
     }
 
