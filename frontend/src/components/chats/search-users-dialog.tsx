@@ -21,10 +21,31 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<User[]>([])
-  const { allUsers, loading, error } = useUsers();
-  const user = useAuth();
   const currentUser = useAuth()
   const socket = useSocket();
+  const [allUsers, setAllUsers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true)
+        const { data: usersData } = await axios.get("http://localhost:3000/users")
+        setAllUsers(usersData)
+        setError(null)
+      } catch (err) {
+        console.error("Error fetching users:", err)
+        setError("Failed to fetch users")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (currentUser) {
+      fetchUsers()
+    }
+  }, [currentUser])
 
 
   const handleSearch = (query: string) => {
@@ -48,7 +69,7 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
   const startChat = (searchResultUserId: string) => {
     // send ws message to start chat
     const newMessage = {
-      users: [user.user?._id, searchResultUserId],
+      users: [currentUser.user?._id, searchResultUserId],
     }
 
     // Send the message via WebSocket
@@ -60,7 +81,7 @@ export function SearchUsersDialog({ open, onOpenChange }: SearchUsersDialogProps
       const { data: chats } = await axios.get("http://localhost:3000/chats")
       const currentChat = chats.find(
         (chat: any) =>
-          chat.users.includes(user.user?._id) &&
+          chat.users.includes(currentUser.user?._id) &&
           chat.users.includes(searchResultUserId) &&
           new Date(chat.updatedAt).getTime() > Date.now() - 5000,
       )

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSocket } from "../../hooks/useSocket"; // Import the custom hook
 import { ChatRow } from "./chat-row";
 import { useAuth } from "../../auth.context";
+import axios from "axios";
 
 // Define the chat type
 // interface Chat {
@@ -22,18 +23,26 @@ interface Chat {
 
 export function ChatsList() {
   const [chats, setChats] = useState<Chat[]>([]);
+  const [loading, setLoading] = useState(true)
   const socket = useSocket();
   const currentUser = useAuth();
 
   useEffect(() => {
-    // Fetch initial chats from API
-    fetch("http://localhost:3000/chats")
-      .then((res) => res.json())
-      .then((data: Chat[]) => setChats(data))
-      .catch((err) => console.error("Error fetching chats:", err));
+    // Fetch initial chats from API using axios
+    const fetchChats = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:3000/chats");
+        setChats(data);
+        setLoading(false)
+      } catch (err) {
+        console.error("Error fetching chats:", err);
+      }
+    };
+
+    fetchChats();
 
     // Listen for real-time chat updates
-    if (socket) {
+    if (socket && currentUser) {
       socket.onmessage = (event) => {
         const updatedChat = JSON.parse(event.data);
         if (updatedChat.type === "createChat" || updatedChat.type === "updateChat") {
@@ -59,7 +68,15 @@ export function ChatsList() {
         socket.onmessage = null;
       }
     };
-  }, [socket]);
+  }, [socket, currentUser]);
+
+  if(loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+      </div>
+    )
+  }
 
   // UI rendering
   if (chats.length === 0) {

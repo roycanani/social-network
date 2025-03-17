@@ -17,32 +17,53 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [otherUser, setOtherUser] = useState<any>(null)
   const [messages, setMessages] = useState<any[]>([])
-  const { allUsers, loading, error } = useUsers()
   const { user } = useAuth()
   const socket = useSocket()
+  const [allUsers, setAllUsers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data: usersData } = await axios.get("http://localhost:3000/users")
+        setAllUsers(usersData)
+        setError(null)
+      } catch (err) {
+        console.error("Error fetching users:", err)
+        setError("Failed to fetch users")
+      }
+    }
+
+    if (user) {
+      fetchUsers()
+    }
+  }, [user])
 
   useEffect(() => {
     // Fetch user from the list of all users
 
-    // Fetch initial messages from an API
-    const fetchMessages = async () => {
-      try {
-        const { data: currentChat } = await axios.get(`http://localhost:3000/chats/${chatId}`)
-        const usersInChat = currentChat.users
-        const otherUserId = usersInChat.find((id: string) => id !== user?._id)
+    if (user && allUsers && chatId) {
+      // Fetch initial messages from an API
+      const fetchMessages = async () => {
+        try {
+          const { data: currentChat } = await axios.get(`http://localhost:3000/chats/${chatId}`)
+          const usersInChat = currentChat.users
+          const otherUserId = usersInChat.find((id: string) => id !== user?._id)
 
-        const fetchedUser = allUsers.find((u) => u._id === otherUserId)
-        setOtherUser(fetchedUser || null)
+          const fetchedUser = allUsers.find((u) => u._id === otherUserId)
+          setOtherUser(fetchedUser || null)
 
-        const { data: messagesData } = await axios.get(`http://localhost:3000/chats/${chatId}/messages`)
-        setMessages(messagesData)
-      } catch (error) {
-        console.error("Error fetching messages:", error)
+          const { data: messagesData } = await axios.get(`http://localhost:3000/chats/${chatId}/messages`)
+          setMessages(messagesData)
+          if (fetchedUser && messagesData) setLoading(false);
+        } catch (error) {
+          console.error("Error fetching messages:", error)
+        }
       }
+      fetchMessages()
     }
-
-    fetchMessages()
-  }, [chatId, allUsers])
+  }, [chatId, allUsers, user])
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -90,8 +111,8 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <p>Loading chat...</p>
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
       </div>
     )
   }
@@ -113,7 +134,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col bg-background" style={{ height: "calc(100vh - 65px)" }}>
       <ChatHeader user={otherUser} />
       <div className="flex-1 overflow-auto">
         <MessageList messages={messages} currentUserId={user?._id!} messagesEndRef={messagesEndRef as any} />

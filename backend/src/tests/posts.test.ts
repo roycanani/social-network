@@ -13,11 +13,13 @@ const testUser: User = {
   userName: "urishiber",
   email: "test@user.com",
   password: "testpassword",
+  _id: "",
+  image: ""
 };
 
 beforeAll(async () => {
   console.log("beforeAll");
-  app = await initApp();
+  app = (await initApp()).app;
   await postModel.deleteMany();
   await userModel.deleteMany();
   await request(app).post("/auth/register").send(testUser);
