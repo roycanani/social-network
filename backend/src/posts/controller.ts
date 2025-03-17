@@ -8,7 +8,7 @@ class PostsController extends BaseController<Post> {
     super(postModel);
   }
 
-  async upoloadImage(req: Request, res: Response) {
+  async uploadImage(req: Request, res: Response) {
     try {
       await uploadFile(req, res);
     } catch (e) {
@@ -21,7 +21,7 @@ class PostsController extends BaseController<Post> {
     }
   }
   async create(req: Request, res: Response) {
-    await this.upoloadImage(req, res);
+    await this.uploadImage(req, res);
 
     const sender = req.params.userId;
     const post: Post = {
@@ -36,7 +36,7 @@ class PostsController extends BaseController<Post> {
   }
 
   async update(req: Request, res: Response) {
-    await this.upoloadImage(req, res);
+    await this.uploadImage(req, res);
 
     const postId: string = req.params.postId;
     const sender = req.params.userId;
