@@ -24,8 +24,9 @@ class PostsController extends BaseController<Post> {
       req.body = post;
 
       await super.create(req, res);
-    } catch (error) {
-      req.file?.filename && deleteFile(req.file.filename);
+    } catch (e) {
+      console.error("Error creating post:", e);
+      if (req.file?.filename) deleteFile(req.file.filename);
       res.status(500).send({
         message: "Internal Server Error",
         details: "Error saving photoSrc",
@@ -51,10 +52,9 @@ class PostsController extends BaseController<Post> {
       req.body = updatedPost;
 
       await super.update(req, res);
-    } catch (error) {
-      console.error("Error creating post:", error);
-
-      req.file?.filename && deleteFile(req.file.filename);
+    } catch (e) {
+      console.error("Error updating post:", e);
+      if (req.file?.filename) deleteFile(req.file.filename);
       res.status(500).send({
         message: "Internal Server Error",
         details: "Error saving photoSrc",
