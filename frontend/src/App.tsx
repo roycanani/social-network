@@ -17,6 +17,8 @@ import ChatPage from "./pages/ChatPage";
 import CreatePost from "./pages/CreatePost";
 import Feed from "./pages/Feed";
 import MyPosts from "./pages/MyPosts";
+import Logout from "./pages/Logout";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const { setToken } = useAuthDispatch();
@@ -105,9 +107,10 @@ function App() {
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/my-posts" element={<MyPosts />} />
                 <Route path="/create-post" element={<CreatePost />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/login" element={<SignIn />} />
+                <Route path="/logout" element={<Logout />} />{" "}
                 <Route path="*" element={<NotFound />} />{" "}
-                {/* <Route path="/profile" element={<Profile></Profile>} /> */}
               </>
             )}
           </Routes>
