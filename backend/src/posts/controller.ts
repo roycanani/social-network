@@ -37,15 +37,13 @@ class PostsController extends BaseController<Post> {
     try {
       const postId: string = req.params.postId;
       const sender = req.params.userId;
+      await uploadFile(req, res);
 
       const updatedPost: Post = {
         sender,
-        likedBy: [],
-        comments: [],
         ...JSON.parse(req.body.post),
       };
       if (req.file?.filename) {
-        await uploadFile(req, res);
         updatedPost.photoSrc = req.file.filename;
         const oldPhoto = (await postModel.findById(postId))?.photoSrc;
         if (oldPhoto) deleteFile(oldPhoto);

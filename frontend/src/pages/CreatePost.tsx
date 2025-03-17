@@ -91,7 +91,12 @@ export default function CreatePost() {
             },
           }
         );
-      else await axios.post("http://localhost:3000/posts", formData);
+      else
+        await axios.post("http://localhost:3000/posts", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       navigate("/feed"); // Redirect to posts list
     } catch (error) {
       console.error("Error creating post:", error);
