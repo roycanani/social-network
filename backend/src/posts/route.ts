@@ -86,31 +86,6 @@ postsRouter.get("/", postsController.getAll.bind(postsController));
 
 /**
  * @swagger
- * /posts/{id}:
- *   get:
- *     summary: Get a post by ID
- *     tags: [Posts]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The post ID
- *     responses:
- *       200:
- *         description: Successful response
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Post'
- *       404:
- *         description: Post not found
- */
-postsRouter.get("/:id", postsController.getById.bind(postsController));
-
-/**
- * @swagger
  * /posts:
  *   post:
  *     summary: Create a new post

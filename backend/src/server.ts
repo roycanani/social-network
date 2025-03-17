@@ -8,6 +8,7 @@ import express, { Express } from "express";
 import { usersRouter } from "./users/route";
 import { postsRouter } from "./posts/route";
 import { commentsRouter } from "./comments/route";
+import { aiRouter } from "./ai/route";
 import authRouter from "./auth/route";
 import passport from "passport";
 import "./auth/googleStrategy";
@@ -27,6 +28,7 @@ app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
 app.use("/auth", authRouter);
+app.use("/ai", aiRouter);
 app.use(express.static("public"));
 
 const options = {
