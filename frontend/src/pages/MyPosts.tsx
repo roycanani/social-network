@@ -1,10 +1,10 @@
-import { Feed } from "../components/feed";
+import { PostsList } from "../components/postsList";
 
-export default function Home() {
+export default function MyPosts() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-8">
       <div className="w-full max-w-md mx-auto">
-        <Feed />
+        <PostsList getOnlyPostsOfUser={true} />
       </div>
     </main>
   );

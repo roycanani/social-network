@@ -13,7 +13,8 @@ import GoogleLogin from "./pages/OIDCLogin";
 import { Navbar } from "./components/navbar";
 import NotFound from "./pages/NotFound";
 import CreatePost from "./pages/CreatePost";
-import Home from "./pages/Home";
+import Feed from "./pages/Feed";
+import MyPosts from "./pages/MyPosts";
 
 function App() {
   const { setToken } = useAuthDispatch();
@@ -97,12 +98,12 @@ function App() {
             ) : (
               <>
                 <Route path="/" element={<Navigate to="/feed" replace />} />{" "}
-                <Route path="/feed" element={<Home />} />
+                <Route path="/feed" element={<Feed />} />
+                <Route path="/my-posts" element={<MyPosts />} />
                 <Route path="/create-post" element={<CreatePost />} />
                 <Route path="/login" element={<SignIn />} />
                 <Route path="*" element={<NotFound />} />{" "}
                 {/* <Route path="/profile" element={<Profile></Profile>} /> */}
-                {/* <Route path="/post/:id" element={<PostDetails></PostDetails>} /> */}
               </>
             )}
           </Routes>

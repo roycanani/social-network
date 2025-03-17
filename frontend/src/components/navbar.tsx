@@ -30,6 +30,13 @@ export function Navbar() {
             <Home className="h-4 w-4" />
             Pet Feed
           </Link>
+          <Link
+            to="/my-posts"
+            className="items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hidden md:flex"
+          >
+            <User className="h-4 w-4" />
+            My Posts
+          </Link>
         </div>
 
         <div className="ml-auto flex items-center gap-2">

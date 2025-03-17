@@ -38,6 +38,7 @@ const AuthProvider = ({
     setAuthState({
       token,
       user: {
+        _id: tokenUser?._id || "",
         email: tokenUser?.email || "",
         image: tokenUser?.image || "",
         userName: tokenUser?.username || "",

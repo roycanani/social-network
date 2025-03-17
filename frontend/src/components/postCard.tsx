@@ -9,6 +9,10 @@ import {
   Send,
   Bookmark,
   MoreHorizontal,
+  Trash2,
+  Edit,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { User } from "../model";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
@@ -18,40 +22,82 @@ import { Input } from "./ui/input";
 import { Post } from "../model/post";
 import { useAuth } from "../auth.context";
 import { IMAGES_URL } from "../lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface PostProps {
   post: Post;
-  currentUser: User;
   onLike: (postId: string) => void;
   onAddComment: (postId: string, comment: string) => void;
+  onDeletePost: (postId: string) => void;
+  onUpdatePost: (post: Post) => void;
 }
 
-export function PostCard({ post, onLike, onAddComment }: PostProps) {
+export function PostCard({
+  post,
+  onLike,
+  onAddComment,
+  onDeletePost,
+  onUpdatePost,
+}: PostProps) {
   const [commentText, setCommentText] = useState("");
+  const [showComments, setShowComments] = useState(false);
+
   const { user } = useAuth();
-  const isLiked = post.likedBy?.some(
-    (currUser) => currUser.userName === user!.userName
-  );
+  const isLiked = post.likedBy?.some((likeUser) => likeUser._id === user!._id);
+  const isOwnPost = post.sender?._id === user?._id;
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
     onAddComment(post._id, commentText);
     setCommentText("");
+    setShowComments(true);
+  };
+
+  const toggleComments = () => {
+    setShowComments(!showComments);
   };
 
   return (
     <Card className="overflow-hidden border border-border">
       <CardHeader className="flex flex-row items-center py-2 px-3 space-x-2">
         <Avatar className="h-6 w-6">
-          <AvatarImage src={post.sender.image} alt={post.sender.userName} />
-          <AvatarFallback>{post.sender.userName?.charAt(0)}</AvatarFallback>
+          <AvatarImage src={post.sender?.image} alt={post.sender?.userName} />
+          <AvatarFallback>{post.sender?.userName?.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <p className="text-xs font-medium">{post.sender.userName}</p>
+          <p className="text-xs font-medium">{post.sender?.userName}</p>
         </div>
-        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 rounded-full"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">More options</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            {isOwnPost && (
+              <>
+                <DropdownMenuItem onClick={() => onUpdatePost(post)}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit post
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onDeletePost(post._id)}>
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete post
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
 
       <CardContent className="p-0">
@@ -82,24 +128,8 @@ export function PostCard({ post, onLike, onAddComment }: PostProps) {
             variant="ghost"
             size="icon"
             className="h-6 w-6 rounded-full p-0"
-          >
-            <MessageCircle className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 rounded-full p-0"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
-          <div className="flex-1" />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 rounded-full p-0"
-          >
-            <Bookmark className="h-4 w-4" />
-          </Button>
+            onClick={toggleComments}
+          ></Button>
         </div>
 
         {post && post.likedBy && post.likedBy!.length > 0 && (
@@ -110,37 +140,64 @@ export function PostCard({ post, onLike, onAddComment }: PostProps) {
             </p>
           </div>
         )}
-
+        {post.title && (
+          <div className="px-2 w-full">
+            <div className="text-mm bg-muted/30 rounded-md px-2 py-1.5">
+              <p className="leading-relaxed font-bold">{post.title}</p>
+            </div>
+          </div>
+        )}
         {post.content && (
-          <div className="px-2 pb-1">
-            <p className="text-xs">
-              <span className="font-medium">{post.sender.userName}</span>{" "}
-              {post.content.length > 60
-                ? `${post.content.substring(0, 60)}...`
-                : post.content}
-            </p>
+          <div className="px-2 pb-3 w-full">
+            <div className="text-sm bg-muted/30 rounded-md px-2 py-1.5">
+              <p className="leading-relaxed">{post.content}</p>
+            </div>
           </div>
         )}
 
-        {post.comments && post.comments.length > 0 && (
-          <div className="px-2 pb-1">
-            {post.comments.length > 1 && (
-              <p className="text-xs text-muted-foreground">
-                View all {post.comments.length} comments
-              </p>
+        {post.comments.length > 0 && (
+          <div className="px-2 pt-3 pb-1">
+            <button
+              onClick={toggleComments}
+              className="flex items-center text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <span>
+                View {post.comments.length}{" "}
+                {post.comments.length === 1 ? "comment" : "comments"}
+              </span>
+              {showComments ? (
+                <ChevronUp className="h-3 w-3 ml-1" />
+              ) : (
+                <ChevronDown className="h-3 w-3 ml-1" />
+              )}
+            </button>
+
+            {/* Only show comments when expanded */}
+            {showComments && (
+              <div className="flex flex-col gap-2 mt-2">
+                {post.comments?.map((comment, index) => (
+                  <div key={index} className="flex items-start gap-1.5">
+                    <Avatar className="h-4 w-4 mt-0.5">
+                      <AvatarImage
+                        src={comment.sender.image}
+                        alt={comment.sender.userName}
+                      />
+                      <AvatarFallback className="text-[8px]">
+                        {comment.sender.userName?.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-xs">
+                        <span className="text-muted-foreground/80 font-medium mr-1.5">
+                          {comment.sender.userName}
+                        </span>
+                        {comment.content}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
-            <div className="flex items-start mb-0.5">
-              <p className="text-xs">
-                <span className="font-medium">
-                  {post.comments[post.comments.length - 1].sender.userName}
-                </span>{" "}
-                {post.comments[post.comments.length - 1].content!.length > 40
-                  ? `${post.comments[
-                      post.comments.length - 1
-                    ].content!.substring(0, 40)}...`
-                  : post.comments[post.comments.length - 1].content}
-              </p>
-            </div>
           </div>
         )}
 

@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface User {
-  _id?: string;
+  _id: string;
   userName: string;
   password: string;
   email: string;
@@ -10,11 +10,7 @@ export interface User {
   refreshToken?: string[];
 }
 
-const userSchema = new mongoose.Schema<User>({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    auto: true,
-  },
+const userSchema = new Schema<User>({
   userName: {
     type: String,
     required: true,
@@ -44,4 +40,4 @@ const userSchema = new mongoose.Schema<User>({
   },
 });
 
-export const userModel = mongoose.model<User>("Users", userSchema);
+export const userModel = mongoose.model<User>("users", userSchema);

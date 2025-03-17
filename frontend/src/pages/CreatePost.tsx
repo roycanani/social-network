@@ -1,9 +1,8 @@
 "use client";
 
 import type React from "react";
-
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
@@ -15,19 +14,33 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { Camera, Upload, X, Send } from "lucide-react";
+import { Upload, X, Send } from "lucide-react";
 import axios from "axios";
+import { Post } from "../model/post";
+import { IMAGES_URL } from "../lib/utils";
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isCapturing, setIsCapturing] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const navigte = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { post: editingPost, isEditing } = (location.state || {}) as {
+    post?: Post;
+    isEditing?: boolean;
+  };
+
+  // If editing, populate the form with the post data
+  useEffect(() => {
+    if (isEditing && editingPost) {
+      setTitle(editingPost.title);
+      setContent(editingPost.content || "");
+      setImagePreview(IMAGES_URL + editingPost.photoSrc);
+    }
+  }, [isEditing, editingPost]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,72 +56,17 @@ export default function CreatePost() {
     }
   };
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setIsCapturing(true);
-      }
-    } catch (err) {
-      console.error("Error accessing camera:", err);
-    }
-  };
-
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-
-      // Set canvas dimensions to match video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      // Draw video frame to canvas
-      context?.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const file = new File([blob], "photo.png", { type: "image/png" });
-          setImageFile(file);
-
-          // Optional: Generate a preview for the UI
-          const imageDataUrl = URL.createObjectURL(blob);
-          setImagePreview(imageDataUrl);
-        }
-      });
-
-      // Stop camera stream
-      const stream = video.srcObject as MediaStream;
-      stream.getTracks().forEach((track) => track.stop());
-
-      setIsCapturing(false);
-    }
-  };
-
   const clearImage = () => {
     setImagePreview(null);
+    setImageFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
-    }
-  };
-
-  const stopCamera = () => {
-    if (videoRef.current) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-      setIsCapturing(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData();
-    // formData.append("title", title);
-    // formData.append("content", content);
     formData.append(
       "post",
       JSON.stringify({
@@ -118,14 +76,25 @@ export default function CreatePost() {
     );
     if (imageFile) {
       formData.append("file", imageFile); // Attach the image file
+    } else if (!imagePreview) {
+      alert("Please upload an image.");
+      return;
     }
     try {
-      await axios.post("http://localhost:3000/posts", formData);
-      alert("Post created successfully!");
-      navigte("/feed"); // Redirect to posts list
+      if (isEditing && editingPost)
+        await axios.put(
+          `http://localhost:3000/posts/${editingPost._id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      else await axios.post("http://localhost:3000/posts", formData);
+      navigate("/feed"); // Redirect to posts list
     } catch (error) {
       console.error("Error creating post:", error);
-      alert("Failed to create post.");
     }
   };
 
@@ -161,64 +130,42 @@ export default function CreatePost() {
             </div>
 
             <div className="space-y-2">
-              <Label>Photo</Label>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => fileInputRef.current?.click()}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="photo"
+                  className="after:content-['*'] after:ml-0.5 after:text-red-500"
                 >
-                  <Upload className="mr-2 h-4 w-4" /> Upload Photo
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={startCamera}
-                  disabled={isCapturing}
-                >
-                  <Camera className="mr-2 h-4 w-4" /> Take Photo
-                </Button>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
+                  Photo
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById("photo")?.click()}
+                    className={`w-full ${
+                      !imagePreview ? "border-dashed border-2" : ""
+                    }`}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    {imagePreview ? "Change Photo" : "Upload Photo (Required)"}
+                  </Button>
+                  <Input
+                    id="photo"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </div>
               </div>
 
-              {isCapturing && (
-                <div className="mt-4 space-y-2">
-                  <div className="relative border rounded-md overflow-hidden">
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      className="w-full h-auto"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button type="button" onClick={capturePhoto}>
-                      Capture
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={stopCamera}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {imagePreview && (
-                <div className="mt-4 relative">
+              {imagePreview ? (
+                <div className="mt-2 relative">
                   <div className="border rounded-md overflow-hidden">
                     <img
                       src={imagePreview || "/placeholder.svg"}
                       alt="Preview"
-                      className="w-full h-auto"
+                      className="w-full h-full"
                     />
                   </div>
                   <Button
@@ -231,8 +178,13 @@ export default function CreatePost() {
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
+              ) : (
+                <div className="mt-2 border border-dashed rounded-md p-8 text-center">
+                  <p className="text-muted-foreground text-sm">
+                    No photo selected. Please upload an image.
+                  </p>
+                </div>
               )}
-
               <canvas ref={canvasRef} className="hidden" />
             </div>
 
@@ -246,7 +198,8 @@ export default function CreatePost() {
 
           <CardFooter>
             <Button type="submit" className="w-full">
-              <Send className="mr-2 h-4 w-4" /> Create Post
+              <Send className="mr-2 h-4 w-4" />{" "}
+              {isEditing ? "Update Post" : "Create Post"}
             </Button>
           </CardFooter>
         </form>
