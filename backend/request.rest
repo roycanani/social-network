@@ -61,6 +61,16 @@ DELETE http://localhost:3000/comments/677ec432d954efe3eefc4d2e
 
 /////// Users ///////
 
+### Register
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "userName": "sagsagsag",
+  "email": "sagsagsag@gmail.com",
+  "password": "123123123"
+}
+
 ### Get All Users
 GET http://localhost:3000/users
 Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Q2ODFjNDk1MjYwOWVjZGNiMTRkODUiLCJyYW5kb20iOiIwLjgwNzQ1NjM1NzYwNTg2OTMiLCJpYXQiOjE3NDIxMjgwODEsImV4cCI6MTc0MjczMjg4MX0.HP4GHpR1rKfNrSy42Y4Ky8ByD5f0jA-74i5kB6_7ZmM

@@ -124,6 +124,12 @@ const setupWebSocket = (server: http.Server) => {
           // Update last message in chat
           referencedChat.lastMessage = newMessage._id.toString();
           await referencedChat.save();
+          //broadcast the updated chat to all clients
+          wss.clients.forEach((client) => {
+            if (client.readyState === 1) {
+              client.send(JSON.stringify({ type: "updateChat", _id: referencedChat._id, users: referencedChat.users, lastMessage: referencedChat.lastMessage, updatedAt: referencedChat.updatedAt }));
+            }
+          });
 
           // Broadcast the message to all clients
           wss.clients.forEach((client) => {

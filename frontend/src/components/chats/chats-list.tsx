@@ -36,14 +36,14 @@ export function ChatsList() {
     if (socket) {
       socket.onmessage = (event) => {
         const updatedChat = JSON.parse(event.data);
-        if (updatedChat.type === "createChat") {
+        if (updatedChat.type === "createChat" || updatedChat.type === "updateChat") {
           const {type, ...rest} = updatedChat;
           setChats((prevChats) => {
-            const existingChatIndex = prevChats.findIndex(chat => chat._id === rest.chatId);
+            const existingChatIndex = prevChats.findIndex(chat => chat._id === rest._id);
             if (existingChatIndex !== -1) {
               // Update existing chat
               const updatedChats = [...prevChats];
-              updatedChats[existingChatIndex] = rest;
+              updatedChats[existingChatIndex] = { ...prevChats[existingChatIndex], ...rest };
               return updatedChats;
             } else {
               // Add new chat
@@ -73,8 +73,11 @@ export function ChatsList() {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      {chats.filter(chat => chat.users.includes(currentUser.user?._id!)).map((chat, index) => (
-        <ChatRow key={index} chat={chat} />
+      {chats
+      .filter(chat => chat?.users?.includes(currentUser.user?._id!))
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .map((chat, index) => (
+        <ChatRow key={chat._id} chat={chat} />
       ))}
     </div>
   );
