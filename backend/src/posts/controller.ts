@@ -8,22 +8,9 @@ class PostsController extends BaseController<Post> {
     super(postModel);
   }
 
-  async create(req: Request, res: Response) {
-    const sender = req.params.userId;
-
+  async upoloadImage(req: Request, res: Response) {
     try {
       await uploadFile(req, res);
-      const post: Post = {
-        ...JSON.parse(req.body.post),
-        sender,
-        likedBy: [],
-        comments: [],
-        photoSrc: req.file?.filename ?? "",
-      };
-
-      req.body = post;
-
-      await super.create(req, res);
     } catch (e) {
       console.error("Error creating post:", e);
       if (req.file?.filename) deleteFile(req.file.filename);
@@ -33,33 +20,41 @@ class PostsController extends BaseController<Post> {
       });
     }
   }
+  async create(req: Request, res: Response) {
+    await this.upoloadImage(req, res);
+
+    const sender = req.params.userId;
+    const post: Post = {
+      ...JSON.parse(req.body.post),
+      sender,
+      likedBy: [],
+      comments: [],
+      photoSrc: req.file?.filename ?? "",
+    };
+    req.body = post;
+    await super.create(req, res);
+  }
 
   async update(req: Request, res: Response) {
-    try {
-      const postId: string = req.params.postId;
-      const sender = req.params.userId;
-      await uploadFile(req, res);
+    await this.upoloadImage(req, res);
 
-      const updatedPost: Post = {
-        sender,
-        ...JSON.parse(req.body.post),
-      };
-      if (req.file?.filename) {
-        updatedPost.photoSrc = req.file.filename;
-        const oldPhoto = (await postModel.findById(postId))?.photoSrc;
-        if (oldPhoto) deleteFile(oldPhoto);
-      }
-      req.body = updatedPost;
+    const postId: string = req.params.postId;
+    const sender = req.params.userId;
 
-      await super.update(req, res);
-    } catch (e) {
-      console.error("Error updating post:", e);
-      if (req.file?.filename) deleteFile(req.file.filename);
-      res.status(500).send({
-        message: "Internal Server Error",
-        details: "Error saving photoSrc",
-      });
+    const updatedPost: Post = {
+      sender,
+      ...JSON.parse(req.body.post),
+    };
+
+    if (req.file?.filename) {
+      updatedPost.photoSrc = req.file.filename;
+      const oldPhoto = (await postModel.findById(postId))?.photoSrc;
+      if (oldPhoto) deleteFile(oldPhoto);
     }
+
+    req.body = updatedPost;
+
+    await super.update(req, res);
   }
 
   async getAll(req: Request, res: Response) {

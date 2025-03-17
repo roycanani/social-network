@@ -16,10 +16,8 @@ class CommentsController {
         ...comment,
         sender,
       };
-      req.body = fullComment;
-      const body = req.body;
       try {
-        const newComment = await commentModel.create(body);
+        const newComment = await commentModel.create(fullComment);
         await postModel.updateOne(
           { _id: postId },
           { $push: { comments: newComment._id } }
