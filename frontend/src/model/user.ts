@@ -8,11 +8,12 @@
 
 export interface User {
   /** The id of the user */
-  _id?: string;
+  _id: string;
   /** The name of the user */
   userName?: string;
   /** The email of the user */
   email: string;
   /** The email of the user */
   password?: string;
+  image?: string;
 }

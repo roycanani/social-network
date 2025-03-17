@@ -86,7 +86,7 @@ const loginOIDC = async (req: Request, res: Response) => {
 
     const tokens = await loginGenerateTokenValidation(res, user);
     res.redirect(
-      `http://localhost:3001/oidc-login?accessToken=${tokens?.accessToken}&refreshToken=${tokens?.refreshToken}&_id=${user._id}`
+      `http://localhost:5000/oidc-login?accessToken=${tokens?.accessToken}&refreshToken=${tokens?.refreshToken}&_id=${user._id}`
     );
   } catch (err) {
     res.status(400).send(err);

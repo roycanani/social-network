@@ -93,7 +93,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-background">
         <p>Loading chat...</p>
       </div>
     )
