@@ -31,7 +31,7 @@ export function ChatsList() {
     // Fetch initial chats from API using axios
     const fetchChats = async () => {
       try {
-        const { data } = await axios.get("/chats", {
+        const { data } = await axios.get("/api/chats", {
           headers: {
             Authorization: `Bearer ${currentUser?.token}`,
           },

@@ -26,7 +26,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data: usersData } = await axios.get("/users", {
+        const { data: usersData } = await axios.get("/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

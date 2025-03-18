@@ -34,7 +34,7 @@ export function SearchUsersDialog({
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const { data: usersData } = await axios.get("/users", {
+        const { data: usersData } = await axios.get("/api/users", {
           headers: {
             Authorization: `Bearer ${currentUser?.token}`,
           },
