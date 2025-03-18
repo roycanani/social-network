@@ -8,6 +8,7 @@ import {
 } from "react";
 import { User } from "./model";
 import { parseJwt } from "./lib/utils";
+import config from "./config";
 
 // Updated types
 type AuthState = {
@@ -55,7 +56,7 @@ const AuthProvider = ({
   };
 
   useEffect(() => {
-    axios.defaults.baseURL = "http://localhost:3000";
+    axios.defaults.baseURL = config.apiUrl;
     const interceptorId = axios.interceptors.request.use((config) => {
       if (authState.token) {
         config.headers.Authorization = `Bearer ${authState.token}`;

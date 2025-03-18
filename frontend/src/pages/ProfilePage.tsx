@@ -55,7 +55,7 @@ export default function ProfilePage() {
     if (profilePictureURL !== user?.image && image) {
       formData.append("file", image);
     }
-    await axios.put(`http://localhost:3000/users/${user!._id}`, formData, {
+    await axios.put(`/users/${user!._id}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
