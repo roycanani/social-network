@@ -188,7 +188,7 @@ export function PostCard({
                         alt={post.sender?.userName}
                       />
                       <AvatarFallback className="text-[14px]">
-                        {user?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+                        {comment.sender.userName?.slice(0, 2).toUpperCase() ?? "GU"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
