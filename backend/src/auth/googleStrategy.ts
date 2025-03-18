@@ -36,12 +36,9 @@ passport.use(
           });
           done(null, createdUser);
         } else {
-          console.log("Update user details from google");
-          const updatedUser = await userModel.findOneAndUpdate({
-            email: profile._json.email,
-          });
+          console.log("User found", user);
 
-          done(null, updatedUser!);
+          done(null, user);
         }
       } catch (err) {
         done(err, undefined);
