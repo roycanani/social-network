@@ -104,7 +104,7 @@ export function PostCard({
           <img
             src={IMAGES_URL + post.photoSrc || "/placeholder.svg"}
             alt={post.title}
-            className="object-cover w-full h-full"
+            className="object-scale-down w-full h-full"
           />
         </div>
       </CardContent>
