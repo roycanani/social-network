@@ -86,7 +86,7 @@ const setupWebSocket = (server: http.Server) => {
   const wss = new WebSocketServer({ server });
   console.log("WebSocket server initialized.");
 
-  wss.on("connection", async (ws, _req) => {
+  wss.on("connection", async (ws) => {
     console.log("New WebSocket connection established.");
 
     ws.on("message", async (message) => {
