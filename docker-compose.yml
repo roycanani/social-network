@@ -25,6 +25,7 @@ services:
       - REFRESH_TOKEN_EXPIRES=${REFRESH_TOKEN_EXPIRES}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REDIRECT_ADDRESS=${GOOGLE_REDIRECT_ADDRESS}
     depends_on:
       - mongodb
     restart: unless-stopped
