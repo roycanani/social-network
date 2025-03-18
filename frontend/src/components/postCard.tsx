@@ -186,11 +186,12 @@ export function PostCard({
                   <div key={index} className="flex items-center gap-1.5">
                     <Avatar className="h-6 w-6 pb-0.5">
                       <AvatarImage
-                        src={post.sender?.image}
-                        alt={post.sender?.userName}
+                        src={comment.sender?.image}
+                        alt={comment.sender?.userName}
                       />
                       <AvatarFallback className="text-[14px]">
-                        {comment.sender.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+                        {comment.sender?.userName?.slice(0, 2).toUpperCase() ??
+                          "GU"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
