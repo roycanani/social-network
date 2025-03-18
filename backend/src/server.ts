@@ -43,6 +43,8 @@ app.use("/messages", messagesRouter);
 app.use("/ai", aiRouter);
 app.use(express.static("public"));
 
+const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -51,7 +53,7 @@ const options = {
       version: "1.0.0",
       description: "REST server including authentication using JWT",
     },
-    servers: [{ url: "http://localhost:4000" }],
+    servers: [{ url: BASE_URL }],
   },
   apis: ["./src/**/*route.ts"],
 };
