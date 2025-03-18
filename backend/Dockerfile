@@ -2,8 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install build dependencies for bcrypt and other native modules
-RUN apk add --no-cache python3 make g++
+# # Install build dependencies for bcrypt and other native modules
+# RUN apk add --no-cache python3 make g++
+RUN mkdir -p /app/public/images 
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -22,7 +23,7 @@ COPY . .
 RUN pnpm run build
 
 # Rebuild bcrypt specifically to ensure it's properly compiled
-RUN cd node_modules/bcrypt && npm rebuild bcrypt --build-from-source
+# RUN cd node_modules/bcrypt && npm rebuild bcrypt --build-from-source
 
 # Set environment to production
 ENV NODE_ENV=production
