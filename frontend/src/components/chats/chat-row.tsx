@@ -76,7 +76,11 @@ export function ChatRow({ chat }: ChatRowProps) {
     >
       <Avatar className="h-10 w-10">
         <AvatarImage
-          src={"https://avatars.githubusercontent.com/u/118629175?v=4"}
+          src={
+            otherUser?.image ??
+            otherUser?.userName?.slice(0, 2).toUpperCase() ??
+            "GU"
+          }
           alt={otherUser?.userName}
         />
         <AvatarFallback>{initials}</AvatarFallback>

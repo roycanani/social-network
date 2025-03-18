@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { ArrowLeft } from "lucide-react"
-import { Button } from "../ui/button"
-import { useNavigate } from "react-router-dom"
-import { User } from "../../model"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
+import { User } from "../../model";
 
 interface ChatHeaderProps {
-  user: User
+  user: User;
 }
 
 export function ChatHeader({ user }: ChatHeaderProps) {
@@ -15,11 +15,11 @@ export function ChatHeader({ user }: ChatHeaderProps) {
   const status = "online";
 
   // Get initials for avatar fallback
-  const initials = user.userName!
-    .split(" ")
+  const initials = user
+    .userName!.split(" ")
     .map((n) => n[0])
     .join("")
-    .toUpperCase()
+    .toUpperCase();
 
   return (
     <div className="flex items-center gap-3 p-4 border-b">
@@ -34,7 +34,10 @@ export function ChatHeader({ user }: ChatHeaderProps) {
       </Button>
 
       <Avatar className="h-9 w-9">
-        <AvatarImage src={"https://avatars.githubusercontent.com/u/118629175?v=4"} alt={user.userName} />
+        <AvatarImage
+          src={user.image ?? user.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+          alt={user.userName}
+        />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
 
@@ -43,15 +46,22 @@ export function ChatHeader({ user }: ChatHeaderProps) {
         <div className="flex items-center gap-1.5">
           <div
             className={`w-2 h-2 rounded-full ${
-              status === "online" ? "bg-green-500" : status === "away" ? "bg-yellow-500" : "bg-gray-400"
+              status === "online"
+                ? "bg-green-500"
+                : status === "away"
+                ? "bg-yellow-500"
+                : "bg-gray-400"
             }`}
           />
           <span className="text-xs text-muted-foreground">
-            {status === "online" ? "Online" : status === "away" ? "Away" : "Offline"}
+            {status === "online"
+              ? "Online"
+              : status === "away"
+              ? "Away"
+              : "Offline"}
           </span>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
