@@ -34,6 +34,7 @@ class PostsController extends BaseController<Post> {
       req.body = post;
       await super.create(req, res);
     } catch (e) {
+      console.error("Error creating post:", e);
       res.status(400).send({
         message: "Bad Request",
         details: "Invalid post data",
@@ -61,6 +62,7 @@ class PostsController extends BaseController<Post> {
       req.body = updatedPost;
       await super.update(req, res);
     } catch (e) {
+      console.error("Error updating post:", e);
       res.status(400).send({
         message: "Bad Request",
         details: "Invalid post data",

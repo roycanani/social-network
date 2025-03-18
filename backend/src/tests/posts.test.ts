@@ -42,47 +42,9 @@ afterAll(() => {
   jest.restoreAllMocks();
 });
 
-let postId = "";
 const mockUserId = new mongoose.Types.ObjectId().toString();
 
 describe("Posts Tests", () => {
-  // test("Test success get all posts", async () => {
-  //   jest.spyOn(postModel, "find").mockResolvedValueOnce([
-  //     {
-  //       title: "First Post",
-  //       content: "This is the content of the first post.",
-  //       sender: "641a1b2c3d4e5f6789012346",
-  //       comments: ["641a1b2c3d4e5f6789012345", "641a1b2c3d4e5f6789012347"],
-  //       createdAt: "2025-03-15T10:00:00.000Z",
-  //       likedBy: ["641a1b2c3d4e5f6789012348", "641a1b2c3d4e5f6789012350"],
-  //       photoSrc: "https://example.com/photos/first-post.jpg",
-  //     },
-  //   ]);
-  //   const response = await request(app).get("/posts").set("userId", mockUserId); // Assuming userId is passed in headers
-  //   expect(response.statusCode).toBe(200);
-  //   expect(response.body.length).toBe(0);
-  // });
-  // test("Test success get posts with query param", async () => {
-  //   jest.spyOn(postModel, "find").mockResolvedValueOnce([]);
-
-  //   const response = await request(app)
-  //     .get("/posts?sender=" + testUser._id)
-  //     .set({ authorization: "JWT " + testUser.accessToken });
-  //   expect(response.statusCode).toBe(200);
-  //   expect(response.body.length).toBe(0);
-  // });
-  // test("Test get all posts - Internal Server Error", async () => {
-  //   const err = new Error("MongoServerSelectionError");
-  //   err.name = "MongoServerSelectionError";
-  //   jest.spyOn(postModel, "find").mockRejectedValue(err);
-
-  //   const response = await request(app)
-  //     .get("/posts")
-  //     .set({ authorization: "JWT " + testUser.accessToken });
-
-  //   expect(response.statusCode).toBe(500);
-  //   expect(response.body.details).toBe("Database connection error");
-  // });
   test("Test success Update Post", async () => {
     (postModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
       ...postsMock[0],
@@ -92,7 +54,6 @@ describe("Posts Tests", () => {
       .send({ post: JSON.stringify(postsMock[0]) })
       .set("userId", mockUserId); // Assuming userId is passed in headers
     expect(response.statusCode).toBe(200);
-    postId = response.body._id;
   });
   test("Test fail Update Post bad body", async () => {
     (postModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
@@ -129,7 +90,6 @@ describe("Posts Tests", () => {
     expect(response.body.content).toBe(postsMock[0].content);
     expect(response.body.title).toBe(postsMock[0].title);
     expect(response.body.sender).toBe(postsMock[0].sender);
-    postId = response.body._id;
   });
   test("Test fail Create Post bad body", async () => {
     (postModel.create as jest.Mock).mockResolvedValue({

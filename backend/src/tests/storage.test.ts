@@ -1,12 +1,11 @@
-import multer from "multer";
 import * as fs from "fs";
-import { Request, Response } from "express";
-import { deleteFile, uploadFile } from "../common/storage";
+import { deleteFile } from "../common/storage";
 
 jest.mock("multer", () => {
   const multerMock = jest.fn(() => ({
     single: jest.fn(),
   }));
+  // eslint-disable-next-line
   (multerMock as any).diskStorage = jest.fn(() => ({})); // Mock diskStorage
 
   return multerMock;
@@ -14,52 +13,9 @@ jest.mock("multer", () => {
 jest.mock("fs");
 
 describe("Storage Module", () => {
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
-  let mockMulter: jest.Mock;
-
   beforeEach(() => {
-    mockRequest = {};
-    mockResponse = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
-    mockMulter = multer as unknown as jest.Mock;
     jest.clearAllMocks();
   });
-
-  //   describe("uploadFile", () => {
-  //     it("should successfully upload a file", async () => {
-  //         const mockSingle = jest.fn((req, res, cb) => cb(null));
-  //         mockMulter.mockReturnValue({ single: mockSingle });
-
-  //       await expect(
-  //         uploadFile(mockRequest as Request, mockResponse as Response)
-  //       ).resolves.toBeUndefined();
-  //       expect(mockSingle).toHaveBeenCalledWith(
-  //         mockRequest,
-  //         mockResponse,
-  //         expect.any(Function)
-  //       );
-  //     });
-
-  //     it("should fail to upload a file due to multer error", async () => {
-  //       const mockSingle = jest.fn((req, res, cb) =>
-  //         cb(new Error("Multer Error"))
-  //       );
-  //       mockMulter.mockReturnValue({ single: mockSingle });
-
-  //       await expect(
-  //         uploadFile(mockRequest as Request, mockResponse as Response)
-  //       ).rejects.toThrow("Multer Error");
-  //       expect(mockSingle).toHaveBeenCalledWith(
-  //         mockRequest,
-  //         mockResponse,
-  //         expect.any(Function)
-  //       );
-  //     });
-  //   });
-
   describe("deleteFile", () => {
     it("should successfully delete a file", () => {
       const mockUnlink = jest.fn((path, cb) => cb(null));

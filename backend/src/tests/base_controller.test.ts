@@ -1,12 +1,13 @@
 import request from "supertest";
 import express, { Express } from "express";
-import mongoose, { Model } from "mongoose";
+import { Model } from "mongoose";
 import BaseController from "../common/base_controller";
 
 // filepath: backend/src/common/base_controller.test.ts
 
 const mockModel = {
   find: jest.fn(),
+  // eslint-disable-next-line
 } as unknown as Model<any>;
 
 const app: Express = express();

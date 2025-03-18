@@ -15,6 +15,7 @@ jest.mock("@google/generative-ai", () => {
 });
 
 // Import the mock function after defining it in jest.mock
+// eslint-disable-next-line
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mockGenerateContent =
   GoogleGenerativeAI().getGenerativeModel().generateContent;
