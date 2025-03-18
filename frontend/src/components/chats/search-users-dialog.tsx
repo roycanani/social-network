@@ -134,7 +134,7 @@ export function SearchUsersDialog({
                 }}
               >
                 <Avatar className="h-9 w-9">
-                  {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
+                  <AvatarImage src={user.image} alt={user.userName} />
                   <AvatarFallback>
                     {user
                       .userName!.split(" ")
