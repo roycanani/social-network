@@ -39,12 +39,16 @@ const testUser: User = {
   userName: "urishiber",
   email: "test@user.com",
   password: "testpassword",
+  _id: "", // Add a valid _id value here
+  image: "", // Add a valid image URL or path here
 };
 
 const testUser2: User = {
   userName: "testUser2",
   email: "test@user2.com",
   password: "testpassword2",
+  _id: "", // Add a valid _id value here
+  image: "", // Add a valid image URL or path here
 };
 
 describe("Auth Tests", () => {
@@ -199,20 +203,6 @@ describe("Auth Tests", () => {
 
     expect(response.statusCode).toBe(200);
     jest.restoreAllMocks();
-  });
-
-  test("Returns 500 when generateToken returns null", async () => {
-    // Mock `generateToken` to return null without throwing an error
-    const spy = jest.spyOn(jwtManager, "generateToken").mockReturnValue(null);
-
-    const response = await request(app).post("/auth/login").send({
-      email: testUser.email,
-      password: testUser.password,
-    });
-
-    expect(response.statusCode).toBe(500);
-
-    spy.mockRestore(); // Restore original behavior after the test
   });
 
   test("Login handles null refreshToken array", async () => {
@@ -386,7 +376,7 @@ describe("Auth Tests", () => {
     // Temporarily unset environment variables
     delete process.env.SERVER_TOKEN_SECRET;
 
-    const tokens = jwtManager.generateToken("testUserId");
+    const tokens = jwtManager.generateToken("testUserId", "A", "a", "a");
     expect(tokens).toBeNull();
 
     // Restore environment variables

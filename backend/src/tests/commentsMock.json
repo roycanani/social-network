@@ -1,17 +1,32 @@
 [
     {
-        "content": "some content",
-        "sender": "677ff5652758ff9eb4710a1c",
-        "post": "677ff6802758ff9eb4710a24"
+        "_id": "641a1b2c3d4e5f6789012345",
+        "content": "This is the first comment.",
+        "sender": "641a1b2c3d4e5f6789012346",
+        "createdAt": "2025-03-15T10:00:00.000Z"
     },
     {
-        "content": "some content 2",
-        "sender": "677ff5652758ff9eb4710a1c",
-        "post": "677ff6802758ff9eb4710a24"
+        "_id": "641a1b2c3d4e5f6789012347",
+        "content": "Another insightful comment here.",
+        "sender": "641a1b2c3d4e5f6789012348",
+        "createdAt": "2025-03-16T12:30:00.000Z"
     },
     {
-        "content": "some content 3",
-        "sender": "677ff5652758ff9eb4710a1c",
-        "post": "677ff6802758ff9eb4710a24"
+        "_id": "641a1b2c3d4e5f6789012349",
+        "content": "Yet another comment for testing.",
+        "sender": "641a1b2c3d4e5f6789012350",
+        "createdAt": "2025-03-17T08:15:00.000Z"
+    },
+    {
+        "_id": "641a1b2c3d4e5f6789012351",
+        "content": "This is a different comment.",
+        "sender": "641a1b2c3d4e5f6789012352",
+        "createdAt": "2025-03-17T09:45:00.000Z"
+    },
+    {
+        "_id": "641a1b2c3d4e5f6789012353",
+        "content": "Final comment in the mock data.",
+        "sender": "641a1b2c3d4e5f6789012354",
+        "createdAt": "2025-03-17T11:00:00.000Z"
     }
 ]

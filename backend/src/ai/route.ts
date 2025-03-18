@@ -3,6 +3,6 @@ import { generateContent } from "./controller";
 
 export const aiRouter = express.Router();
 
-aiRouter.post("/generateContent", generateContent);
+aiRouter.post("/generate-content", generateContent);
 
 export default aiRouter;
