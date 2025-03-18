@@ -12,12 +12,16 @@ const testUser: User = {
   userName: usersMock[0].userName!,
   email: usersMock[0].email,
   password: usersMock[0].password,
+  _id: usersMock[0]._id!,
+  image: usersMock[0].image!,
 };
 
 const testUser2: User = {
   userName: usersMock[1].userName!,
   email: usersMock[1].email,
   password: usersMock[1].password,
+  _id: usersMock[1]._id!,
+  image: usersMock[1].image!,
 };
 
 beforeAll(async () => {
