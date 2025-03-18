@@ -163,7 +163,7 @@ export function PostCard({
         )}
 
         {post.comments.length > 0 && (
-          <div className="px-2 pt-3 pb-1">
+          <div className="px-2 pt-3 pb-1 w-full">
             <button
               onClick={toggleComments}
               className="flex items-center text-xs text-muted-foreground hover:text-foreground transition-colors"
@@ -210,7 +210,7 @@ export function PostCard({
 
         <form
           onSubmit={handleSubmitComment}
-          className="flex items-center py-1 px-2 border-t border-border"
+          className="flex items-center py-1 px-2 border-t border-border w-full"
         >
           <Input
             type="text"
