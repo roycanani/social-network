@@ -127,7 +127,11 @@ export function PostCard({
             className="h-6 w-6 rounded-full p-0"
             onClick={toggleComments}
           >
-            <MessageCircle className={`h-4 w-4`} />
+            <MessageCircle
+              className={`h-4 w-4 ${
+                showComments ? "fill-black text-black" : ""
+              }`}
+            />
           </Button>
         </div>
 
