@@ -100,7 +100,7 @@ class BaseController<T> {
     const id = req.params.id;
     const body: UpdateQuery<T> = req.body;
     try {
-      const item = await this.model.findByIdAndUpdate(id, body);
+      const item = await this.model.findByIdAndUpdate(id, body, { new: true });
       if (!item) res.status(404).send({ message: "Not found" });
       else res.status(200).send("updated");
     } catch (error) {

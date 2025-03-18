@@ -11,6 +11,7 @@ interface Token {
   username: string;
   email: string;
   image: string;
+  _id: string;
 }
 
 export function parseJwt(token: string | null): Token | undefined {
@@ -22,3 +23,12 @@ export function parseJwt(token: string | null): Token | undefined {
   const base64 = base64Url.replace("-", "+").replace("_", "/");
   return JSON.parse(window.atob(base64));
 }
+
+export const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+export const IMAGES_URL = "http://localhost:3000" + "/images/";

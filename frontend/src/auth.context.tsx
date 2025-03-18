@@ -17,6 +17,7 @@ type AuthState = {
 
 type AuthDispatch = {
   setToken: (token: string | null) => void;
+  setUser: (user: User & { image: string }) => void;
 };
 
 type AuthProviderProps = {
@@ -38,11 +39,19 @@ const AuthProvider = ({
     setAuthState({
       token,
       user: {
+        _id: tokenUser?._id || "",
         email: tokenUser?.email || "",
         image: tokenUser?.image || "",
         userName: tokenUser?.username || "",
       },
     });
+  };
+
+  const setUser = (user: User & { image: string }) => {
+    setAuthState((prevState) => ({
+      ...prevState,
+      user,
+    }));
   };
 
   useEffect(() => {
@@ -61,7 +70,7 @@ const AuthProvider = ({
 
   return (
     <AuthContext.Provider value={authState}>
-      <AuthDispatchContext.Provider value={{ setToken }}>
+      <AuthDispatchContext.Provider value={{ setToken, setUser }}>
         {children}
       </AuthDispatchContext.Provider>
     </AuthContext.Provider>

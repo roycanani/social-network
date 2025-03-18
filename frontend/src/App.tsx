@@ -5,7 +5,6 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Home from "./pages/Home";
 import { useEffect, useState } from "react";
 import { useAuthDispatch, useAuth } from "./auth.context";
 import { postAuthRefresh } from "./auth/auth";
@@ -13,12 +12,17 @@ import { parseJwt } from "./lib/utils";
 import GoogleLogin from "./pages/OIDCLogin";
 import { Navbar } from "./components/navbar";
 import NotFound from "./pages/NotFound";
+import CreatePost from "./pages/CreatePost";
+import Feed from "./pages/Feed";
+import MyPosts from "./pages/MyPosts";
+import Logout from "./pages/Logout";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const { setToken } = useAuthDispatch();
   const { token } = useAuth();
-  const [loadingUser, setLoadingUser] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -96,12 +100,13 @@ function App() {
             ) : (
               <>
                 <Route path="/" element={<Navigate to="/feed" replace />} />{" "}
-                <Route path="/feed" element={<Home />} />
+                <Route path="/feed" element={<Feed />} />
+                <Route path="/my-posts" element={<MyPosts />} />
+                <Route path="/create-post" element={<CreatePost />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/login" element={<SignIn />} />
+                <Route path="/logout" element={<Logout />} />{" "}
                 <Route path="*" element={<NotFound />} />{" "}
-                {/* <Route path="/add-post" element={<AddPost></AddPost>} /> */}
-                {/* <Route path="/profile" element={<Profile></Profile>} /> */}
-                {/* <Route path="/post/:id" element={<PostDetails></PostDetails>} /> */}
               </>
             )}
           </Routes>
