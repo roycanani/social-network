@@ -5,6 +5,7 @@ import postsMock from "./postsMock.json";
 import { postModel } from "../posts/model";
 import { User } from "./common";
 import { postsRouter } from "../posts/route";
+import { deleteFile } from "../common/storage";
 
 let app: Express;
 
@@ -43,6 +44,42 @@ afterAll(() => {
 });
 
 const mockUserId = new mongoose.Types.ObjectId().toString();
+
+describe("PostsController - Update", () => {
+  test("should successfully update a post with a new photo", async () => {
+    const mockPost = {
+      _id: "1",
+      sender: mockUserId,
+      content: "Updated content",
+      photoSrc: "oldPhoto.jpg",
+    };
+
+    (postModel.findById as jest.Mock).mockResolvedValue(mockPost);
+    (postModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+      ...mockPost,
+      content: "Updated content",
+      photoSrc: "newPhoto.jpg",
+    });
+
+    const response = await request(app)
+      .put(`/posts/${"1"}`)
+      .send({ post: JSON.stringify({ content: "Updated content" }) })
+      .set("userId", mockUserId);
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("should fail to update a post with invalid data", async () => {
+    const response = await request(app)
+      .put(`/posts/${"1"}`)
+      .send({ invalidField: "Invalid data" })
+      .set("userId", mockUserId);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe("Bad Request");
+    expect(response.body.details).toBe("Invalid post data");
+  });
+});
 
 describe("Posts Tests", () => {
   test("Test success Update Post", async () => {

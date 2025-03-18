@@ -48,10 +48,7 @@ class PostsController extends BaseController<Post> {
       const postId: string = req.params.postId;
       const sender = req.params.userId;
 
-      const updatedPost: Post = {
-        sender,
-        ...JSON.parse(req.body.post),
-      };
+      const updatedPost: Post = JSON.parse(req.body.post);
 
       if (req.file?.filename) {
         updatedPost.photoSrc = req.file.filename;

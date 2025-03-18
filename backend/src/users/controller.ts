@@ -11,11 +11,10 @@ class UsersController extends BaseController<User> {
     try {
       await uploadFile(req, res);
     } catch (e) {
-      console.error("Error creating post:", e);
       if (req.file?.filename) deleteFile(req.file.filename);
       res.status(500).send({
         message: "Internal Server Error",
-        details: "Error saving photoSrc",
+        details: e,
       });
     }
   }
