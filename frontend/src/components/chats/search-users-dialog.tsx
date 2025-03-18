@@ -11,6 +11,7 @@ import { useUsers } from "../../hooks/useUsers";
 import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../auth.context";
 import axios from "axios";
+import config from "../../config";
 
 interface SearchUsersDialogProps {
   open: boolean;
@@ -34,7 +35,7 @@ export function SearchUsersDialog({
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const { data: usersData } = await axios.get("/api/users", {
+        const { data: usersData } = await axios.get(`${config.apiUrl}/users`, {
           headers: {
             Authorization: `Bearer ${currentUser?.token}`,
           },

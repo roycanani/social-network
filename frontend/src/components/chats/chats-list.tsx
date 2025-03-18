@@ -3,6 +3,7 @@ import { useSocket } from "../../hooks/useSocket"; // Import the custom hook
 import { ChatRow } from "./chat-row";
 import { useAuth } from "../../auth.context";
 import axios from "axios";
+import config from "../../config";
 
 // Define the chat type
 // interface Chat {
@@ -31,7 +32,7 @@ export function ChatsList() {
     // Fetch initial chats from API using axios
     const fetchChats = async () => {
       try {
-        const { data } = await axios.get("/api/chats", {
+        const { data } = await axios.get(`${config.apiUrl}/chats`, {
           headers: {
             Authorization: `Bearer ${currentUser?.token}`,
           },
