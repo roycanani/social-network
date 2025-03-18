@@ -136,11 +136,7 @@ export function SearchUsersDialog({
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={user.image} alt={user.userName} />
                   <AvatarFallback>
-                    {user
-                      .userName!.split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
+                    {user?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
                   </AvatarFallback>
                 </Avatar>
                 <div>

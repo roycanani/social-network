@@ -55,12 +55,8 @@ export function ChatRow({ chat }: ChatRowProps) {
     fetchOtherUser();
   }, []);
 
-  // Get initials for avatar fallback
-  const initials = currentUser?.user
-    ?.userName!.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+  const initials =
+    currentUser?.user?.userName?.slice(0, 2).toUpperCase() ?? "GU";
 
   const handleClick = () => {
     navigate(`/chat/${chat._id}`);

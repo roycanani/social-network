@@ -14,12 +14,7 @@ export function ChatHeader({ user }: ChatHeaderProps) {
   const navigate = useNavigate();
   const status = "online";
 
-  // Get initials for avatar fallback
-  const initials = user
-    .userName!.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+  const initials = user?.userName?.slice(0, 2).toUpperCase() ?? "GU";
 
   return (
     <div className="flex items-center gap-3 p-4 border-b">
