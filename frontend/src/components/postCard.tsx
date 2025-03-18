@@ -123,6 +123,11 @@ export function PostCard({
               }`}
             />
           </Button>
+          {post && post.likedBy && post.likedBy!.length > 0 && (
+            <div className="px-1 pr-2">
+              <p className="text-xs font-bold">{post.likedBy!.length} </p>
+            </div>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -135,16 +140,13 @@ export function PostCard({
               }`}
             />
           </Button>
+          {post && post.comments && post.comments!.length > 0 && (
+            <div className="px-1 pr-2">
+              <p className="text-xs font-bold">{post.comments!.length} </p>
+            </div>
+          )}
         </div>
 
-        {post && post.likedBy && post.likedBy!.length > 0 && (
-          <div className="px-2 pb-1">
-            <p className="text-xs font-medium">
-              {post.likedBy!.length}{" "}
-              {post.likedBy!.length === 1 ? "like" : "likes"}
-            </p>
-          </div>
-        )}
         {post.title && (
           <div className="px-2 w-full">
             <div className="text-mm bg-muted/30 rounded-md px-2 py-1.5">
