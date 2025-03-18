@@ -7,33 +7,20 @@ import { Request, Response } from "express";
 const STORAGE_PATH = "public/images";
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, STORAGE_PATH);
-  },
-  filename: (req, file, cb) => {
-    cb(null, uuidv4() + path.extname(file.originalname));
-  },
+  destination: (req, file, cb) => cb(null, STORAGE_PATH),
+  filename: (req, file, cb) =>
+    cb(null, uuidv4() + path.extname(file.originalname)),
 });
 
 const upload = multer({ storage: storage });
 
-export const uploadFile = (req: Request, res: Response): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    upload.single("file")(req, res, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-};
+export const uploadFile = (req: Request, res: Response): Promise<void> =>
+  new Promise((resolve, reject) =>
+    upload.single("file")(req, res, (err) => (err ? reject(err) : resolve()))
+  );
 
 export const deleteFile = (fileName: string) => {
-  const filePath = `${STORAGE_PATH}/${fileName}`;
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error(err);
-    }
+  fs.unlink(`${STORAGE_PATH}/${fileName}`, (err) => {
+    if (err) console.error(err);
   });
 };

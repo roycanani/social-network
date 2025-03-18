@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "description": "REST server including authentication using JWT by Roy Canani & Urir Shiber"
   },
-  "servers": [{ "url": "http://localhost:3000" }],
+  "servers": [{ "url": "http://localhost:4000" }],
   "paths": {
     "/auth/register": {
       "post": {

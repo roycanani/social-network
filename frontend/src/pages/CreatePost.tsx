@@ -109,7 +109,7 @@ export default function CreatePost() {
 
     setIsGeneratingContent(true);
     try {
-      const generatedContent = await axios.post("/ai/generateContent", {
+      const generatedContent = await axios.post("/ai/generate-content", {
         postTitle: title,
       });
       setContent(generatedContent.data);

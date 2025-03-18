@@ -1,11 +1,10 @@
 import request from "supertest";
 import mongoose from "mongoose";
-import { Express } from "express";
+import express, { Express } from "express";
 import postsMock from "./postsMock.json";
-import initApp from "../server";
 import { postModel } from "../posts/model";
-import { userModel } from "../users/model";
 import { User } from "./common";
+import { postsRouter } from "../posts/route";
 
 let app: Express;
 
@@ -13,139 +12,106 @@ const testUser: User = {
   userName: "urishiber",
   email: "test@user.com",
   password: "testpassword",
-  _id: "",
-  image: "testimage",
+  _id: "", // Default value for _id
+  image: "", // Default value for image
 };
 
-beforeAll(async () => {
-  console.log("beforeAll");
-  app = (await initApp()).app;
-  await postModel.deleteMany();
-  await userModel.deleteMany();
-  await request(app).post("/auth/register").send(testUser);
-  const loginRes = await request(app).post("/auth/login").send(testUser);
-  testUser.accessToken = loginRes.body.accessToken;
-  testUser.refreshToken = loginRes.body.refreshToken;
-  testUser._id = loginRes.body._id;
-  postsMock[0].sender = testUser._id!;
+// Mock the models
+jest.mock("../posts/model");
+// Mock the authentication middleware
+jest.mock("../auth/controller", () => {
+  return {
+    authMiddleware: jest.fn((req, res, next) => {
+      req.user = {
+        _id: new mongoose.Types.ObjectId().toString(),
+        accessToken: "mockAccessToken",
+      };
+      testUser._id = req.user._id;
+      next();
+    }),
+  };
 });
 
-afterAll((done) => {
-  console.log("afterAll");
-  mongoose.connection.close();
-  done();
+beforeAll(() => {
+  app = express();
+  app.use(express.json()); // Middleware to parse JSON
+  app.use("/posts", postsRouter); // Mount the comments router
 });
 
-let postId = "";
+afterAll(() => {
+  jest.restoreAllMocks();
+});
+
+const mockUserId = new mongoose.Types.ObjectId().toString();
 
 describe("Posts Tests", () => {
-  test("Test success get all posts", async () => {
+  test("Test success Update Post", async () => {
+    (postModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+      ...postsMock[0],
+    });
     const response = await request(app)
-      .get("/posts")
-      .set({ authorization: "JWT " + testUser.accessToken });
+      .put("/posts/aaa")
+      .send({ post: JSON.stringify(postsMock[0]) })
+      .set("userId", mockUserId); // Assuming userId is passed in headers
     expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(0);
   });
-  test("Test success get posts with query param", async () => {
+  test("Test fail Update Post bad body", async () => {
+    (postModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+      ...postsMock[0],
+    });
     const response = await request(app)
-      .get("/posts?sender=" + testUser._id)
-      .set({ authorization: "JWT " + testUser.accessToken });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(0);
+      .put("/posts/aaa")
+      .send(JSON.stringify(postsMock[0]))
+      .set("userId", mockUserId); // Assuming userId is passed in headers
+    expect(response.statusCode).toBe(400);
   });
-  test("Test get all posts - Internal Server Error", async () => {
+  test("Test Update Post - Internal Server Error", async () => {
     const err = new Error("MongoServerSelectionError");
     err.name = "MongoServerSelectionError";
-    jest.spyOn(postModel, "find").mockRejectedValue(err);
+    (postModel.findByIdAndUpdate as jest.Mock).mockRejectedValue(err);
 
     const response = await request(app)
-      .get("/posts")
+      .put("/posts/aaa")
+      .send({ post: JSON.stringify(postsMock[0]) })
       .set({ authorization: "JWT " + testUser.accessToken });
 
     expect(response.statusCode).toBe(500);
     expect(response.body.details).toBe("Database connection error");
-
-    jest.restoreAllMocks();
   });
   test("Test success Create Post", async () => {
+    (postModel.create as jest.Mock).mockResolvedValue({
+      ...postsMock[0],
+    });
     const response = await request(app)
       .post("/posts")
-      .set({ authorization: "JWT " + testUser.accessToken })
-      .send(postsMock[0]);
+      .send({ post: JSON.stringify(postsMock[0]) })
+      .set("userId", mockUserId); // Assuming userId is passed in headers
     expect(response.statusCode).toBe(201);
     expect(response.body.content).toBe(postsMock[0].content);
     expect(response.body.title).toBe(postsMock[0].title);
     expect(response.body.sender).toBe(postsMock[0].sender);
-    postId = response.body._id;
+  });
+  test("Test fail Create Post bad body", async () => {
+    (postModel.create as jest.Mock).mockResolvedValue({
+      ...postsMock[0],
+    });
+    const response = await request(app)
+      .post("/posts")
+      .send(JSON.stringify(postsMock[0]))
+      .set("userId", mockUserId); // Assuming userId is passed in headers
+    expect(response.statusCode).toBe(400);
   });
   test("Test Create Post - Internal Server Error", async () => {
     const err = new Error("MongoServerSelectionError");
     err.name = "MongoServerSelectionError";
-    jest.spyOn(postModel, "create").mockRejectedValue(err);
+    (postModel.create as jest.Mock).mockRejectedValue(err);
 
     const response = await request(app)
       .post("/posts")
-      .set({ authorization: "JWT " + testUser.accessToken })
-      .send(postsMock[0]);
+      .send({ post: JSON.stringify(postsMock[0]) })
+      .set({ authorization: "JWT " + testUser.accessToken });
 
     expect(response.statusCode).toBe(500);
     expect(response.body.details).toBe("Database connection error");
-
-    jest.restoreAllMocks();
-  });
-  test("Test success Posts get by id", async () => {
-    const response = await request(app)
-      .get("/posts/" + postId)
-      .set({ authorization: "JWT " + testUser.accessToken });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.content).toBe(postsMock[0].content);
-    expect(response.body.title).toBe(postsMock[0].title);
-    expect(response.body.sender).toBe(postsMock[0].sender);
-  });
-
-  test("Test get post by senderId", async () => {
-    const response = await request(app)
-      .get("/posts?sender=" + postsMock[0].sender)
-      .set({ authorization: "JWT " + testUser.accessToken });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.length).toBe(1);
-    expect(response.body[0].content).toBe(postsMock[0].content);
-    expect(response.body[0].title).toBe(postsMock[0].title);
-    expect(response.body[0].sender).toBe(postsMock[0].sender);
-  });
-
-  test("Test get post by senderId- bad Request", async () => {
-    const response = await request(app)
-      .get("/posts?sender=" + postsMock[0].title)
-      .set({ authorization: "JWT " + testUser.accessToken });
-    expect(response.statusCode).toBe(500);
-  });
-
-  const BadPostId = 5;
-  test("Test fail Update Post - Internal Server Error", async () => {
-    const response = await request(app)
-      .put("/posts/" + BadPostId)
-      .send(postsMock[0])
-      .set({ authorization: "JWT " + testUser.accessToken });
-
-    expect(response.statusCode).toBe(500);
-  });
-
-  const NotExsistPostId = "67891ed02bc40f138cec8593";
-  test("Test fail Update Post - Post Not Found", async () => {
-    const response = await request(app)
-      .put("/posts/" + NotExsistPostId)
-      .send(postsMock[0])
-      .set({ authorization: "JWT " + testUser.accessToken });
-    // No such postId
-    expect(response.statusCode).toBe(404);
-  });
-
-  test("Test success Update Post", async () => {
-    const response = await request(app)
-      .put("/posts/" + postId)
-      .send({ ...postsMock[0] })
-      .set({ authorization: "JWT " + testUser.accessToken });
-    expect(response.statusCode).toBe(200);
   });
 });

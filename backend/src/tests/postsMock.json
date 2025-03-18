@@ -1,17 +1,29 @@
 [
     {
-        "title": "Hello",
-        "sender": "677ff5652758ff9eb4710a1c",
-        "content": "Post 1"
+        "title": "First Post",
+        "content": "This is the content of the first post.",
+        "sender": "641a1b2c3d4e5f6789012346",
+        "comments": ["641a1b2c3d4e5f6789012345", "641a1b2c3d4e5f6789012347"],
+        "createdAt": "2025-03-15T10:00:00.000Z",
+        "likedBy": ["641a1b2c3d4e5f6789012348", "641a1b2c3d4e5f6789012350"],
+        "photoSrc": "https://example.com/photos/first-post.jpg"
     },
     {
-        "title": "Hello 2 ",
-        "sender": "677ff5652758ff9eb4710a1c",
-        "content": "Post 2"
+        "title": "Second Post",
+        "content": "Another post with some interesting content.",
+        "sender": "641a1b2c3d4e5f6789012348",
+        "comments": ["641a1b2c3d4e5f6789012349"],
+        "createdAt": "2025-03-16T12:30:00.000Z",
+        "likedBy": ["641a1b2c3d4e5f6789012346"],
+        "photoSrc": "https://example.com/photos/second-post.jpg"
     },
     {
-        "title": "Hello 3",
-        "sender": "677ff5652758ff9eb4710a1c",
-        "content": "Post 3"
+        "title": "Third Post",
+        "content": "Yet another post for testing purposes.",
+        "sender": "641a1b2c3d4e5f6789012350",
+        "comments": ["641a1b2c3d4e5f6789012351", "641a1b2c3d4e5f6789012353"],
+        "createdAt": "2025-03-17T08:15:00.000Z",
+        "likedBy": ["641a1b2c3d4e5f6789012352", "641a1b2c3d4e5f6789012354"],
+        "photoSrc": "https://example.com/photos/third-post.jpg"
     }
 ]

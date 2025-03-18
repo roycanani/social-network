@@ -22,39 +22,52 @@ class PostsController extends BaseController<Post> {
   }
   async create(req: Request, res: Response) {
     await this.uploadImage(req, res);
-
-    const sender = req.params.userId;
-    const post: Post = {
-      ...JSON.parse(req.body.post),
-      sender,
-      likedBy: [],
-      comments: [],
-      photoSrc: req.file?.filename ?? "",
-    };
-    req.body = post;
-    await super.create(req, res);
+    try {
+      const sender = req.params.userId;
+      const post: Post = {
+        ...JSON.parse(req.body.post),
+        sender,
+        likedBy: [],
+        comments: [],
+        photoSrc: req.file?.filename ?? "",
+      };
+      req.body = post;
+      await super.create(req, res);
+    } catch (e) {
+      console.error("Error creating post:", e);
+      res.status(400).send({
+        message: "Bad Request",
+        details: "Invalid post data",
+      });
+    }
   }
 
   async update(req: Request, res: Response) {
     await this.uploadImage(req, res);
+    try {
+      const postId: string = req.params.postId;
+      const sender = req.params.userId;
 
-    const postId: string = req.params.postId;
-    const sender = req.params.userId;
+      const updatedPost: Post = {
+        sender,
+        ...JSON.parse(req.body.post),
+      };
 
-    const updatedPost: Post = {
-      sender,
-      ...JSON.parse(req.body.post),
-    };
+      if (req.file?.filename) {
+        updatedPost.photoSrc = req.file.filename;
+        const oldPhoto = (await postModel.findById(postId))?.photoSrc;
+        if (oldPhoto) deleteFile(oldPhoto);
+      }
 
-    if (req.file?.filename) {
-      updatedPost.photoSrc = req.file.filename;
-      const oldPhoto = (await postModel.findById(postId))?.photoSrc;
-      if (oldPhoto) deleteFile(oldPhoto);
+      req.body = updatedPost;
+      await super.update(req, res);
+    } catch (e) {
+      console.error("Error updating post:", e);
+      res.status(400).send({
+        message: "Bad Request",
+        details: "Invalid post data",
+      });
     }
-
-    req.body = updatedPost;
-
-    await super.update(req, res);
   }
 
   async getAll(req: Request, res: Response) {

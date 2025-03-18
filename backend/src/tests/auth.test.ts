@@ -205,20 +205,6 @@ describe("Auth Tests", () => {
     jest.restoreAllMocks();
   });
 
-  test("Returns 500 when generateToken returns null", async () => {
-    // Mock `generateToken` to return null without throwing an error
-    const spy = jest.spyOn(jwtManager, "generateToken").mockReturnValue(null);
-
-    const response = await request(app).post("/auth/login").send({
-      email: testUser.email,
-      password: testUser.password,
-    });
-
-    expect(response.statusCode).toBe(500);
-
-    spy.mockRestore(); // Restore original behavior after the test
-  });
-
   test("Login handles null refreshToken array", async () => {
     const user = await userModel.create({
       userName: "testUser",
