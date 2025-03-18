@@ -2,6 +2,20 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
 import { User, userModel } from "../users/model"; // Adjust the path to your User model
 
+// Debug output to verify environment variables
+console.log("Google OAuth Config:");
+console.log("Client ID:", process.env.GOOGLE_CLIENT_ID ? "Found" : "Missing");
+console.log(
+  "Client Secret:",
+  process.env.GOOGLE_CLIENT_SECRET ? "Found" : "Missing"
+);
+console.log(
+  "Redirect URI:",
+  process.env.GOOGLE_REDIRECT_ADDRESS
+    ? process.env.GOOGLE_REDIRECT_ADDRESS
+    : "Missing"
+);
+
 passport.use(
   new GoogleStrategy(
     {

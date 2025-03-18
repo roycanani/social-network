@@ -15,6 +15,8 @@ const testUser: User = {
   userName: "testUser",
   email: "test@user.com",
   password: "testpassword",
+  _id: "",
+  image: "testimage",
 };
 
 const testPost: Post & { _id: mongoose.Types.ObjectId } = {
@@ -23,11 +25,14 @@ const testPost: Post & { _id: mongoose.Types.ObjectId } = {
   sender: new mongoose.Types.ObjectId(),
   comments: [],
   _id: new mongoose.Types.ObjectId(),
+  createdAt: new Date(),
+  likedBy: [],
+  photoSrc: "",
 };
 
 beforeAll(async () => {
   console.log("beforeAll");
-  app = await initApp();
+  app = (await initApp()).app;
   await postModel.deleteMany();
   await commentModel.deleteMany();
   await userModel.deleteMany();

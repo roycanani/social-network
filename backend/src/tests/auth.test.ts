@@ -39,12 +39,16 @@ const testUser: User = {
   userName: "urishiber",
   email: "test@user.com",
   password: "testpassword",
+  _id: "",
+  image: "testimage",
 };
 
 const testUser2: User = {
   userName: "testUser2",
   email: "test@user2.com",
   password: "testpassword2",
+  _id: "",
+  image: "testimage2",
 };
 
 describe("Auth Tests", () => {
@@ -386,7 +390,12 @@ describe("Auth Tests", () => {
     // Temporarily unset environment variables
     delete process.env.SERVER_TOKEN_SECRET;
 
-    const tokens = jwtManager.generateToken("testUserId");
+    const tokens = jwtManager.generateToken(
+      "",
+      "testUserId",
+      "testEmail",
+      "testImage"
+    );
     expect(tokens).toBeNull();
 
     // Restore environment variables

@@ -14,7 +14,7 @@ const testUser: User = {
   email: "test@user.com",
   password: "testpassword",
   _id: "",
-  image: ""
+  image: "testimage",
 };
 
 beforeAll(async () => {
