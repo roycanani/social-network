@@ -45,12 +45,29 @@ export const commentsRouter = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Comment'
+ *             type: object
+ *             required:
+ *               - postId
+ *               - comment
+ *             properties:
+ *               postId:
+ *                 type: string
+ *                 description: The ID of the post to which the comment belongs
+ *               comment:
+ *                 $ref: '#/components/schemas/Comment'
  *     responses:
  *       201:
  *         description: Comment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comment'
  *       400:
  *         description: Invalid input
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Internal server error
  *     security:
  *       - bearerAuth: []
  */

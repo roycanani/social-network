@@ -32,11 +32,27 @@ import { authMiddleware } from "../auth/controller";
  *         sender:
  *           type: string
  *           description: The sender id of the post
+ *         photoSrc:
+ *           type: string
+ *           description: The filename of the uploaded photo
+ *         likedBy:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of user IDs who liked the post
+ *         comments:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of comment IDs associated with the post
  *       example:
  *         _id: 245234t234234r234r23f4
  *         title: My First Post
  *         content: This is the content of my first post.
  *         sender: 324vt23r4tr234t245tbv45by
+ *         photoSrc: "image.jpg"
+ *         likedBy: ["user1", "user2"]
+ *         comments: ["comment1", "comment2"]
  *     PostCreation:
  *       type: object
  *       required:
@@ -49,9 +65,13 @@ import { authMiddleware } from "../auth/controller";
  *         content:
  *           type: string
  *           description: The content of the post
+ *         photoSrc:
+ *           type: string
+ *           description: The filename of the uploaded photo
  *       example:
  *         title: My First Post
  *         content: This is the content of my first post.
+ *         photoSrc: "image.jpg"
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
@@ -72,6 +92,12 @@ import { authMiddleware } from "../auth/controller";
  *           type: string
  *         required: false
  *         description: Filter posts by sender
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Pagination offset
  *     responses:
  *       200:
  *         description: Successful response
@@ -93,9 +119,17 @@ postsRouter.get("/", postsController.getAll.bind(postsController));
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/PostCreation'
+ *             type: object
+ *             properties:
+ *               post:
+ *                 type: string
+ *                 description: JSON string containing the post data
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The image file to upload
  *     responses:
  *       201:
  *         description: Post created successfully
@@ -153,9 +187,17 @@ postsRouter.delete(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/PostCreation'
+ *             type: object
+ *             properties:
+ *               post:
+ *                 type: string
+ *                 description: JSON string containing the updated post data
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The new image file to upload (optional)
  *     responses:
  *       200:
  *         description: Post updated successfully
