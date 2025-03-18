@@ -31,7 +31,11 @@ export function ChatsList() {
     // Fetch initial chats from API using axios
     const fetchChats = async () => {
       try {
-        const { data } = await axios.get("/chats");
+        const { data } = await axios.get("/chats", {
+          headers: {
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        });
         setChats(data);
         setLoading(false);
       } catch (err) {
@@ -97,6 +101,8 @@ export function ChatsList() {
       </div>
     );
   }
+
+  console.log(chats);
 
   return (
     <div className="flex-1 overflow-y-auto">

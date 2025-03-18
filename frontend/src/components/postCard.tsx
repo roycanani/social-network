@@ -162,7 +162,7 @@ export function PostCard({
           </div>
         )}
 
-        {post.comments.length > 0 && (
+        {post.comments && post.comments?.length > 0 && (
           <div className="px-2 pt-3 pb-1 w-full">
             <button
               onClick={toggleComments}

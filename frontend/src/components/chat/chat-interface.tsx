@@ -17,7 +17,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [otherUser, setOtherUser] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const socket = useSocket();
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,11 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data: usersData } = await axios.get("/users");
+        const { data: usersData } = await axios.get("/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setAllUsers(usersData);
         setError(null);
       } catch (err) {
