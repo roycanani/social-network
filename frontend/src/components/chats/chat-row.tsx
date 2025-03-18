@@ -55,9 +55,6 @@ export function ChatRow({ chat }: ChatRowProps) {
     fetchOtherUser();
   }, []);
 
-  const initials =
-    currentUser?.user?.userName?.slice(0, 2).toUpperCase() ?? "GU";
-
   const handleClick = () => {
     navigate(`/chat/${chat._id}`);
   };
@@ -79,7 +76,9 @@ export function ChatRow({ chat }: ChatRowProps) {
           }
           alt={otherUser?.userName}
         />
-        <AvatarFallback>{initials}</AvatarFallback>
+        <AvatarFallback>
+          {otherUser?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+        </AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-baseline mb-1">
