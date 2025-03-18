@@ -30,7 +30,9 @@ jobs:
         run: npm install -g pnpm # Install pnpm globally
 
       - name: Install dependencies Backend
-        run: pnpm install --frozen-lockfile
+        run: |
+            pnpm install # Updates pnpm-lock.yaml to match package.json
+            pnpm install --frozen-lockfile # Installs using the updated lockfile without modifying it
         working-directory: ./backend
 
       - name: Run Lint Backend

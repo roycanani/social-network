@@ -12,6 +12,8 @@ import { parseJwt } from "./lib/utils";
 import GoogleLogin from "./pages/OIDCLogin";
 import { Navbar } from "./components/navbar";
 import NotFound from "./pages/NotFound";
+import ChatsPage from "./pages/ChatsPage";
+import ChatPage from "./pages/ChatPage";
 import CreatePost from "./pages/CreatePost";
 import Feed from "./pages/Feed";
 import MyPosts from "./pages/MyPosts";
@@ -100,6 +102,8 @@ function App() {
             ) : (
               <>
                 <Route path="/" element={<Navigate to="/feed" replace />} />{" "}
+                <Route path="/chats" element={<ChatsPage />} />
+                <Route path="/chat/:id" element={<ChatPage />} />
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/my-posts" element={<MyPosts />} />
                 <Route path="/create-post" element={<CreatePost />} />

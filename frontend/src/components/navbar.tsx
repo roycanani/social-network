@@ -1,4 +1,4 @@
-import { Home, LogOut, Plus, User } from "lucide-react";
+import { Home, LogOut, Plus, User, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -29,6 +29,13 @@ export function Navbar() {
           >
             <Home className="h-4 w-4" />
             Pet Feed
+          </Link>
+          <Link
+            to="/chats"
+            className="items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hidden md:flex"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Chats
           </Link>
           <Link
             to="/my-posts"

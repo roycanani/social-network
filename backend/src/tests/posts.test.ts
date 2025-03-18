@@ -19,7 +19,7 @@ const testUser: User = {
 
 beforeAll(async () => {
   console.log("beforeAll");
-  app = await initApp();
+  app = (await initApp()).app;
   await postModel.deleteMany();
   await userModel.deleteMany();
   await request(app).post("/auth/register").send(testUser);
