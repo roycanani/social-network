@@ -197,7 +197,7 @@ export function PostCard({
                     <div className="flex-1">
                       <p className="text-xs">
                         <span className="text-muted-foreground/80 font-medium mr-1.5">
-                          {comment.sender.userName}
+                          {comment.sender?.userName}
                         </span>
                         {comment.content}
                       </p>
