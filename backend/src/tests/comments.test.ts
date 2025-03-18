@@ -15,6 +15,8 @@ const testUser: User = {
   userName: "testUser",
   email: "test@user.com",
   password: "testpassword",
+  _id: "",
+  image: "testimage",
 };
 
 const testPost: Post & { _id: mongoose.Types.ObjectId } = {
@@ -23,6 +25,9 @@ const testPost: Post & { _id: mongoose.Types.ObjectId } = {
   sender: new mongoose.Types.ObjectId(),
   comments: [],
   _id: new mongoose.Types.ObjectId(),
+  createdAt: new Date(),
+  likedBy: [],
+  photoSrc: "",
 };
 
 beforeAll(async () => {

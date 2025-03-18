@@ -17,7 +17,7 @@ import cors from "cors";
 const app = express();
 // Or, enable CORS for specific origins
 const corsOptions = {
-  origin: "http://localhost:8000", // Replace with your frontend origin
+  origin: ["http://localhost:80", "http://localhost"], // Replace with your frontend origin
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));

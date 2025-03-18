@@ -1,26 +1,28 @@
 [
-    {
-        "userName": "urishiber",
-        "email": "test@user.com",
-        "password": "testpassword"
-    },
-    {
-        "email": "uri@gmail.com",
-        "password": "Aa1234567890",
-        "gender": "male",
-        "userName": "uri123456",
-        "firstName": "uri",
-        "lastName" : "shiber",
-        "phone_number": "0545325447",
-        "date_of_birth": "2019-01-16"
-    },
-    {
-        "email": "uris@gmail.com",
-        "password": "Aa1234567890",
-        "gender": "male"
-    },
-    {
-        "email": "shiber@gmail.com",
-        "password": "Aa1234567890"
-    }
+  {
+    "_id": "5e1f3b3b1c9d440000d1b1b1",
+    "image": "backend/public/images/5e80bb6e-816a-4409-8c7b-75ae77e62ab4.jpeg",
+    "userName": "urishiber",
+    "email": "test@user.com",
+    "password": "testpassword"
+  },
+  {
+    "email": "uri@gmail.com",
+    "password": "Aa1234567890",
+    "gender": "male",
+    "userName": "uri123456",
+    "firstName": "uri",
+    "lastName": "shiber",
+    "phone_number": "0545325447",
+    "date_of_birth": "2019-01-16"
+  },
+  {
+    "email": "uris@gmail.com",
+    "password": "Aa1234567890",
+    "gender": "male"
+  },
+  {
+    "email": "shiber@gmail.com",
+    "password": "Aa1234567890"
+  }
 ]
