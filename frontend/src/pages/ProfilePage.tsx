@@ -88,7 +88,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex-col">
-      <main className="container w-full flex-col">
+      <main className="w-full flex-col">
         <div className="mb-8 space-y-6 flex-col">
           <div className="flex flex-col items-center gap-6">
             <div className="relative">
