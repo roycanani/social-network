@@ -26,6 +26,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAuthDispatch } from "../auth.context";
+import config from "../config";
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -76,7 +77,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      window.location.href = "http://localhost:3000/auth/google";
+      window.location.href = `${config.apiUrl}/auth/google`;
     } catch (err) {
       setError("Failed to login with Google. Please try again.");
     } finally {

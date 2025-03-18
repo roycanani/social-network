@@ -22,7 +22,7 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
   const postsPerPage = 5;
   const fetchPosts = async (offset: number) => {
     try {
-      let url = `http://localhost:3000/posts/?offset=${offset}`;
+      let url = `/posts/?offset=${offset}`;
       if (getOnlyPostsOfUser) url += `&sender=${user?._id}`;
       const postsResponse = (await axios.get(url)).data;
       if (postsResponse.length < 5) setHasMore(false);
@@ -78,7 +78,7 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
           likedBy: updatedLikedBy.map((like) => like._id),
         })
       );
-      await axios.put(`http://localhost:3000/posts/${postId}`, formData);
+      await axios.put(`/posts/${postId}`, formData);
     } catch (error) {
       console.error("Error updating likes:", error);
     }
@@ -107,7 +107,7 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
     );
 
     try {
-      await axios.post(`http://localhost:3000/comments/`, {
+      await axios.post(`/comments/`, {
         postId,
         comment: { content: commentContent },
       });
@@ -118,7 +118,7 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
 
   const handleDeletePost = async (postId: string) => {
     try {
-      await axios.delete(`http://localhost:3000/posts/${postId}`);
+      await axios.delete(`/posts/${postId}`);
       setPosts(posts.filter((post) => post._id !== postId));
     } catch (error) {
       console.error("Error deleting post:", error);

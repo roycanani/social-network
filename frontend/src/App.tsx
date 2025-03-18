@@ -12,10 +12,14 @@ import { parseJwt } from "./lib/utils";
 import GoogleLogin from "./pages/OIDCLogin";
 import { Navbar } from "./components/navbar";
 import NotFound from "./pages/NotFound";
+import ChatsPage from "./pages/ChatsPage";
+import ChatPage from "./pages/ChatPage";
 import CreatePost from "./pages/CreatePost";
 import Feed from "./pages/Feed";
 import MyPosts from "./pages/MyPosts";
 import Signup from "./pages/SignUp";
+import Logout from "./pages/Logout";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const { setToken } = useAuthDispatch();
@@ -101,13 +105,16 @@ function App() {
             ) : (
               <>
                 <Route path="/" element={<Navigate to="/feed" replace />} />{" "}
+                <Route path="/chats" element={<ChatsPage />} />
+                <Route path="/chat/:id" element={<ChatPage />} />
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/my-posts" element={<MyPosts />} />
                 <Route path="/create-post" element={<CreatePost />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/logout" element={<Logout />} />{" "}
                 <Route path="*" element={<NotFound />} />{" "}
-                {/* <Route path="/profile" element={<Profile></Profile>} /> */}
               </>
             )}
           </Routes>

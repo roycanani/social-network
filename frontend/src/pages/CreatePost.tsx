@@ -84,17 +84,13 @@ export default function CreatePost() {
     }
     try {
       if (isEditing && editingPost)
-        await axios.put(
-          `http://localhost:3000/posts/${editingPost._id}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        await axios.put(`/posts/${editingPost._id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       else
-        await axios.post("http://localhost:3000/posts", formData, {
+        await axios.post("/posts", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -113,10 +109,9 @@ export default function CreatePost() {
 
     setIsGeneratingContent(true);
     try {
-      const generatedContent = await axios.post(
-        "http://localhost:3000/ai/generate-content",
-        { postTitle: title }
-      );
+      const generatedContent = await axios.post("/ai/generate-content", {
+        postTitle: title,
+      });
       setContent(generatedContent.data);
     } catch (error) {
       console.error("Error generating content:", error);

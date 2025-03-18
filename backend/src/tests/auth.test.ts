@@ -13,7 +13,7 @@ let app: Express;
 
 beforeAll(async () => {
   console.log("beforeAll");
-  app = await initApp();
+  app = (await initApp()).app;
   await userModel.deleteMany();
 
   // create testUser2
@@ -39,16 +39,16 @@ const testUser: User = {
   userName: "urishiber",
   email: "test@user.com",
   password: "testpassword",
-  _id: "", // Add a valid _id value here
-  image: "", // Add a valid image URL or path here
+  _id: "",
+  image: "testimage",
 };
 
 const testUser2: User = {
   userName: "testUser2",
   email: "test@user2.com",
   password: "testpassword2",
-  _id: "", // Add a valid _id value here
-  image: "", // Add a valid image URL or path here
+  _id: "",
+  image: "testimage2",
 };
 
 describe("Auth Tests", () => {
@@ -376,7 +376,12 @@ describe("Auth Tests", () => {
     // Temporarily unset environment variables
     delete process.env.SERVER_TOKEN_SECRET;
 
-    const tokens = jwtManager.generateToken("testUserId", "A", "a", "a");
+    const tokens = jwtManager.generateToken(
+      "",
+      "testUserId",
+      "testEmail",
+      "testImage"
+    );
     expect(tokens).toBeNull();
 
     // Restore environment variables

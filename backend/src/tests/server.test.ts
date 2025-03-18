@@ -16,7 +16,7 @@ afterAll((done) => {
 describe("Server Initialization Tests", () => {
   test("Successful initialization when DB_CONNECT is defined", async () => {
     process.env.DB_CONNECT = "mongodb://localhost:27017/testdb";
-    app = await initApp();
+    app = (await initApp()).app;
     expect(app).toBeDefined();
   });
 

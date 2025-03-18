@@ -31,4 +31,4 @@ export const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export const IMAGES_URL = "http://localhost:3000" + "/images/";
+export const IMAGES_URL = "" + "/images/";

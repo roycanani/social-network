@@ -8,6 +8,7 @@ import {
 } from "react";
 import { User } from "./model";
 import { parseJwt } from "./lib/utils";
+import config from "./config";
 
 // Updated types
 type AuthState = {
@@ -17,6 +18,7 @@ type AuthState = {
 
 type AuthDispatch = {
   setToken: (token: string | null) => void;
+  setUser: (user: User & { image: string }) => void;
 };
 
 type AuthProviderProps = {
@@ -41,13 +43,20 @@ const AuthProvider = ({
         _id: tokenUser?._id || "",
         email: tokenUser?.email || "",
         image: tokenUser?.image || "",
-        userName: tokenUser?.username || "",
+        userName: tokenUser?.username || ""
       },
     });
   };
 
+  const setUser = (user: User & { image: string }) => {
+    setAuthState((prevState) => ({
+      ...prevState,
+      user,
+    }));
+  };
+
   useEffect(() => {
-    axios.defaults.baseURL = "http://localhost:3000";
+    axios.defaults.baseURL = config.apiUrl;
     const interceptorId = axios.interceptors.request.use((config) => {
       if (authState.token) {
         config.headers.Authorization = `Bearer ${authState.token}`;
@@ -62,7 +71,7 @@ const AuthProvider = ({
 
   return (
     <AuthContext.Provider value={authState}>
-      <AuthDispatchContext.Provider value={{ setToken }}>
+      <AuthDispatchContext.Provider value={{ setToken, setUser }}>
         {children}
       </AuthDispatchContext.Provider>
     </AuthContext.Provider>
