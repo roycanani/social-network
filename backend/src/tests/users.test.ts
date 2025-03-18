@@ -12,15 +12,15 @@ const testUser: User = {
   userName: usersMock[0].userName!,
   email: usersMock[0].email,
   password: usersMock[0].password,
-  _id: "", // Default value for _id
-  image: "", // Default value for image
+  _id: usersMock[0]._id!,
+  image: usersMock[0].image!,
 };
 const testUser2: User = {
   userName: usersMock[1].userName!,
   email: usersMock[1].email,
   password: usersMock[1].password,
-  _id: "", // Default value for _id
-  image: "", // Default value for image
+  _id: usersMock[1]._id!,
+  image: usersMock[1].image!,
 };
 
 beforeAll(async () => {
@@ -107,7 +107,7 @@ describe("Users Tests", () => {
   test("Test fail Update User - Email in use by another user", async () => {
     const response = await request(app)
       .put("/users/" + testUser._id)
-      .send(usersMock[1])
+      .send({ user: JSON.stringify(usersMock[1]) })
       .set({ authorization: "JWT " + testUser.accessToken });
 
     expect(response.statusCode).toBe(500);
@@ -116,7 +116,7 @@ describe("Users Tests", () => {
   test("Test success Update User", async () => {
     const response = await request(app)
       .put("/users/" + testUser._id)
-      .send(usersMock[2])
+      .send({ user: JSON.stringify(testUser) })
       .set({ authorization: "JWT " + testUser.accessToken });
     expect(response.statusCode).toBe(200);
   });
