@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI("AIzaSyCEdXTZTbKyc86WYyNqGbXLP77cjkw679w");
+const genAI = new GoogleGenerativeAI(process.env.AI_TOKEN!);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export const generateContent = async (req: Request, res: Response) => {
