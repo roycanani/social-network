@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import CreatePost from "./pages/CreatePost";
 import Feed from "./pages/Feed";
 import MyPosts from "./pages/MyPosts";
+import Signup from "./pages/SignUp";
 
 function App() {
   const { setToken } = useAuthDispatch();
@@ -94,6 +95,8 @@ function App() {
                 <Route path="/" element={<SignIn />} />
                 <Route path="/oidc-login" element={<GoogleLogin />} />
                 <Route path="/*" element={<Navigate to="/" replace />} />
+                <Route path="/login" element={<SignIn />} />
+                <Route path="/signup" element={<Signup />} />
               </>
             ) : (
               <>
@@ -102,6 +105,7 @@ function App() {
                 <Route path="/my-posts" element={<MyPosts />} />
                 <Route path="/create-post" element={<CreatePost />} />
                 <Route path="/login" element={<SignIn />} />
+                <Route path="/signup" element={<Signup />} />
                 <Route path="*" element={<NotFound />} />{" "}
                 {/* <Route path="/profile" element={<Profile></Profile>} /> */}
               </>

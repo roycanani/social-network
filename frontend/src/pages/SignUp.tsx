@@ -1,7 +1,10 @@
+"use client";
+
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/button";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import {
   Card,
   CardContent,
@@ -10,33 +13,41 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Separator } from "../components/ui/separator";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../components/ui/form";
 import { Input } from "../components/ui/input";
-import { Separator } from "../components/ui/separator";
-import { postAuthLogin } from "../auth/auth";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { useAuthDispatch } from "../auth.context";
 
-const FormSchema = z.object({
-  email: z.string().email({
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-});
+const FormSchema = z
+  .object({
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters.",
+    }),
+    email: z.string().email({
+      message: "Please enter a valid email address.",
+    }),
+    password: z.string().min(8, {
+      message: "Password must be at least 8 characters.",
+    }),
+    confirmPassword: z.string().min(8, {
+      message: "Password must be at least 8 characters.",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-export default function LoginPage() {
+export default function Signup() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
@@ -45,40 +56,36 @@ export default function LoginPage() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const handleEmailLogin = async (data: z.infer<typeof FormSchema>) => {
+  const handleSignup = async (data: z.infer<typeof FormSchema>) => {
     setIsLoading(true);
     setError("");
     try {
-      const { accessToken, refreshToken } = (
-        await postAuthLogin({ email: data.email, password: data.password })
-      ).data;
-      if (!accessToken || !refreshToken) {
-        throw new Error("Invalid response from server");
-      }
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      setToken(accessToken);
-      navigate("/");
+      // Simulate signup API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      navigate("/login");
     } catch (err) {
-      setError("Failed to login. Please try again.");
+      setError("Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleSignup = async () => {
     setIsLoading(true);
     setError("");
 
     try {
+      // Simulate Google signup
       window.location.href = "http://localhost:3000/auth/google";
     } catch (err) {
-      setError("Failed to login with Google. Please try again.");
+      setError("Failed to sign up with Google. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -89,8 +96,10 @@ export default function LoginPage() {
       <img src="/logo192.png" className="max-w-48" alt="petbook" />
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
-          <CardDescription>Choose your preferred login method</CardDescription>
+          <CardTitle className="text-2xl font-bold">
+            Create an Account
+          </CardTitle>
+          <CardDescription>Choose your preferred signup method</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-4">
@@ -98,7 +107,7 @@ export default function LoginPage() {
               type="button"
               variant="outline"
               className="w-full"
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleSignup}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -134,12 +143,31 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
+
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(handleEmailLogin)}
+              onSubmit={form.handleSubmit(handleSignup)}
               className="space-y-4"
             >
-              <div className="space-y-2" />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="John Doe"
+                        id="name"
+                        required
+                        disabled={isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -175,32 +203,47 @@ export default function LoginPage() {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your public display name.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="space-y-2" />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        required
+                        disabled={isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {error && <div className="text-sm text-red-500">{error}</div>}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign in with Email
+                Create Account
               </Button>
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
+        <CardFooter>
           <div className="text-sm text-center w-full">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <button
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/login")}
               className="text-primary font-semibold hover:text-primary/90 underline-offset-4 hover:underline"
             >
-              Sign up
+              Sign in
             </button>
           </div>
         </CardFooter>
