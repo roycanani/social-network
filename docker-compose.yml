@@ -16,9 +16,9 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     ports:
-      - "3000:3000"
+      - "4000:4000"
     environment:
-      - PORT=3000
+      - PORT=4000
       - DB_CONNECT=mongodb://mongodb:27017/web_class
       - SERVER_TOKEN_SECRET=${SERVER_TOKEN_SECRET}
       - TOKEN_EXPIRES=${TOKEN_EXPIRES}

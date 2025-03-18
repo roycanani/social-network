@@ -28,7 +28,7 @@ RUN cd node_modules/bcrypt && npm rebuild bcrypt --build-from-source
 ENV NODE_ENV=production
 
 # Expose the application port
-EXPOSE 3000
+EXPOSE 4000
 
 # Start the application
 CMD ["pnpm", "start"]
