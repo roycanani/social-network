@@ -58,7 +58,7 @@ describe("Server Initialization Tests", () => {
       .default(app)
       .options("/");
     expect(response.headers["access-control-allow-origin"]).toBe(
-      "http://localhost:5000"
+      "http://localhost:4000"
     );
   });
   test("Successful initialization when DB_CONNECT is defined", async () => {

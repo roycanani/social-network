@@ -26,6 +26,8 @@ import {
 import { Input } from "../components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useAuthDispatch } from "../auth.context";
+import { postAuthRegister } from "../auth/auth";
+import config from "../config";
 
 const FormSchema = z
   .object({
@@ -51,7 +53,6 @@ export default function Signup() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
-  const { setToken } = useAuthDispatch();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -67,8 +68,11 @@ export default function Signup() {
     setIsLoading(true);
     setError("");
     try {
-      // Simulate signup API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await postAuthRegister({
+        email: data.email,
+        password: data.password,
+        userName: data.name,
+      });
       navigate("/login");
     } catch (err) {
       setError("Failed to create account. Please try again.");
@@ -82,8 +86,7 @@ export default function Signup() {
     setError("");
 
     try {
-      // Simulate Google signup
-      window.location.href = "http://localhost:3000/auth/google";
+      window.location.href = `${config.apiUrl}/auth/google`;
     } catch (err) {
       setError("Failed to sign up with Google. Please try again.");
     } finally {

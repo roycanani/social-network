@@ -33,8 +33,8 @@ app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
 app.use("/auth", authRouter);
-app.use('/chats', chatsRouter);
-app.use('/messages', messagesRouter);
+app.use("/chats", chatsRouter);
+app.use("/messages", messagesRouter);
 app.use("/ai", aiRouter);
 app.use(express.static("public"));
 
@@ -46,7 +46,7 @@ const options = {
       version: "1.0.0",
       description: "REST server including authentication using JWT",
     },
-    servers: [{ url: "http://localhost:3000" }],
+    servers: [{ url: "http://localhost:4000" }],
   },
   apis: ["./src/**/*route.ts"],
 };
@@ -91,7 +91,9 @@ const setupWebSocket = (server: http.Server) => {
 
     ws.on("message", async (message) => {
       try {
-        const { type, chat, sender, content, users } = JSON.parse(message.toString());
+        const { type, chat, sender, content, users } = JSON.parse(
+          message.toString()
+        );
 
         if (type === "createChat") {
           if (!users || users.length === 0) {
@@ -106,7 +108,14 @@ const setupWebSocket = (server: http.Server) => {
           // Broadcast the message to all clients
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
-              client.send(JSON.stringify({ type: "createChat", users, updatedAt: newChat.updatedAt, _id: newChat._id }));
+              client.send(
+                JSON.stringify({
+                  type: "createChat",
+                  users,
+                  updatedAt: newChat.updatedAt,
+                  _id: newChat._id,
+                })
+              );
             }
           });
 
@@ -121,7 +130,7 @@ const setupWebSocket = (server: http.Server) => {
           const referencedChat = await chatModel.findById(chat);
           if (!referencedChat) {
             ws.send(JSON.stringify({ error: "Chat not found" }));
-          return;
+            return;
           }
 
           // Save the new message in DB
@@ -134,14 +143,31 @@ const setupWebSocket = (server: http.Server) => {
           //broadcast the updated chat to all clients
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
-              client.send(JSON.stringify({ type: "updateChat", _id: referencedChat._id, users: referencedChat.users, lastMessage: referencedChat.lastMessage, updatedAt: referencedChat.updatedAt }));
+              client.send(
+                JSON.stringify({
+                  type: "updateChat",
+                  _id: referencedChat._id,
+                  users: referencedChat.users,
+                  lastMessage: referencedChat.lastMessage,
+                  updatedAt: referencedChat.updatedAt,
+                })
+              );
             }
           });
 
           // Broadcast the message to all clients
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
-              client.send(JSON.stringify({ type: "sendMessage", _id: newMessage._id, chat, sender, content, createdAt: newMessage.createdAt }));
+              client.send(
+                JSON.stringify({
+                  type: "sendMessage",
+                  _id: newMessage._id,
+                  chat,
+                  sender,
+                  content,
+                  createdAt: newMessage.createdAt,
+                })
+              );
             }
           });
 
