@@ -121,7 +121,7 @@ export default function CreatePost() {
     }
   };
   return (
-    <div className="container mx-auto py-8 px-4 max-w-2xl">
+    <div className="container mx-auto py-8 px-4 max-w-2xl min-h-[93vh]">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Create New Post</CardTitle>

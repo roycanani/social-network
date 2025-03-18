@@ -104,7 +104,7 @@ export function PostCard({
           <img
             src={IMAGES_URL + post.photoSrc || "/placeholder.svg"}
             alt={post.title}
-            className="object-cover w-full h-full"
+            className="object-scale-down w-full h-full"
           />
         </div>
       </CardContent>
@@ -123,6 +123,11 @@ export function PostCard({
               }`}
             />
           </Button>
+          {post && post.likedBy && post.likedBy!.length > 0 && (
+            <div className="px-1 pr-2">
+              <p className="text-xs font-bold">{post.likedBy!.length} </p>
+            </div>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -135,16 +140,13 @@ export function PostCard({
               }`}
             />
           </Button>
+          {post && post.comments && post.comments!.length > 0 && (
+            <div className="px-1 pr-2">
+              <p className="text-xs font-bold">{post.comments!.length} </p>
+            </div>
+          )}
         </div>
 
-        {post && post.likedBy && post.likedBy!.length > 0 && (
-          <div className="px-2 pb-1">
-            <p className="text-xs font-medium">
-              {post.likedBy!.length}{" "}
-              {post.likedBy!.length === 1 ? "like" : "likes"}
-            </p>
-          </div>
-        )}
         {post.title && (
           <div className="px-2 w-full">
             <div className="text-mm bg-muted/30 rounded-md px-2 py-1.5">
@@ -161,7 +163,7 @@ export function PostCard({
         )}
 
         {post.comments.length > 0 && (
-          <div className="px-2 pt-3 pb-1">
+          <div className="px-2 pt-3 pb-1 w-full">
             <button
               onClick={toggleComments}
               className="flex items-center text-xs text-muted-foreground hover:text-foreground transition-colors"
@@ -208,7 +210,7 @@ export function PostCard({
 
         <form
           onSubmit={handleSubmitComment}
-          className="flex items-center py-1 px-2 border-t border-border"
+          className="flex items-center py-1 px-2 border-t border-border w-full"
         >
           <Input
             type="text"
