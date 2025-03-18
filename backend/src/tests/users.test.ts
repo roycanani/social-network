@@ -26,7 +26,7 @@ const testUser2: User = {
 
 beforeAll(async () => {
   console.log("beforeAll");
-  app = await initApp();
+  app = (await initApp()).app;
   await userModel.deleteMany();
 
   // create testUser

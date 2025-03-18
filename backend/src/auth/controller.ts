@@ -87,7 +87,7 @@ const loginOIDC = async (req: Request, res: Response) => {
     const tokens = await loginGenerateTokenValidation(res, user);
     res.redirect(
       `${
-        process.env.GOOGLE_REDIRECT_ADDRESS ?? "http://localhost:80"
+        process.env.GOOGLE_REDIRECT_ADDRESS ?? "http://localhost:3001"
       }/oidc-login?accessToken=${tokens?.accessToken}&refreshToken=${
         tokens?.refreshToken
       }&_id=${user._id}`

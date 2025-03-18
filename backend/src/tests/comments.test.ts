@@ -32,7 +32,7 @@ const testPost: Post & { _id: mongoose.Types.ObjectId } = {
 
 beforeAll(async () => {
   console.log("beforeAll");
-  app = await initApp();
+  app = (await initApp()).app;
   await postModel.deleteMany();
   await commentModel.deleteMany();
   await userModel.deleteMany();
