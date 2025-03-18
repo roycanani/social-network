@@ -5,16 +5,13 @@ import type React from "react";
 import { useState } from "react";
 import {
   Heart,
-  MessageCircle,
-  Send,
-  Bookmark,
   MoreHorizontal,
   Trash2,
   Edit,
   ChevronUp,
   ChevronDown,
+  MessageCircle,
 } from "lucide-react";
-import { User } from "../model";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
@@ -129,7 +126,9 @@ export function PostCard({
             size="icon"
             className="h-6 w-6 rounded-full p-0"
             onClick={toggleComments}
-          ></Button>
+          >
+            <MessageCircle className={`h-4 w-4`} />
+          </Button>
         </div>
 
         {post && post.likedBy && post.likedBy!.length > 0 && (
