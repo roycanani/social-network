@@ -15,6 +15,7 @@ import "./auth/googleStrategy";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
+import https from "https";
 import { chatModel } from "./chats/model";
 import { messageModel } from "./messages/model";
 import { chatsRouter } from "./chats/route";
@@ -28,6 +29,11 @@ const corsOptions = {
     "http://node119.cs.colman.ac.il",
     "http://node119.cs.colman.ac.il:4000",
     "http://node119.cs.colman.ac.il:80",
+    "https://localhost:80",
+    "https://localhost",
+    "https://node119.cs.colman.ac.il",
+    "https://node119.cs.colman.ac.il:4000",
+    "https://node119.cs.colman.ac.il:80",
   ],
   optionsSuccessStatus: 200,
 };
@@ -78,9 +84,15 @@ const initApp = () => {
         mongoose
           .connect(process.env.DB_CONNECT)
           .then(() => {
-            const server = http.createServer(app);
-            setupWebSocket(server);
-            resolve({ app, server });
+            if (process.env.USE_HTTPS) {
+              const server = https.createServer(app);
+              setupWebSocket(server);
+              resolve({ app, server });
+            } else {
+              const server = http.createServer(app);
+              setupWebSocket(server);
+              resolve({ app, server });
+            }
           })
           .catch((error) => {
             reject(error);
@@ -90,7 +102,7 @@ const initApp = () => {
   );
 };
 
-const setupWebSocket = (server: http.Server) => {
+const setupWebSocket = (server: http.Server | https.Server) => {
   const wss = new WebSocketServer({ server });
   console.log("WebSocket server initialized.");
 

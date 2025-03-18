@@ -12,6 +12,7 @@ RUN pnpm install
 
 # Copy application code and build
 COPY . .
+COPY /etc/nginx/ssl/ /etc/nginx/ssl/
 RUN pnpm run build
 
 # Production environment
