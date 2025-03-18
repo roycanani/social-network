@@ -26,6 +26,7 @@ const corsOptions = {
     "http://localhost:80",
     "http://localhost",
     "http://node119.cs.colman.ac.il",
+    "http://node119.cs.colman.ac.il:4000",
     "http://node119.cs.colman.ac.il:80",
   ],
   optionsSuccessStatus: 200,
