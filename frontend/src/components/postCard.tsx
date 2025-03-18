@@ -64,7 +64,9 @@ export function PostCard({
       <CardHeader className="flex flex-row items-center py-2 px-3 space-x-2">
         <Avatar className="h-6 w-6">
           <AvatarImage src={post.sender?.image} alt={post.sender?.userName} />
-          <AvatarFallback>{post.sender?.userName?.charAt(0)}</AvatarFallback>
+          <AvatarFallback>
+            {user?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+          </AvatarFallback>
         </Avatar>
         <div className="flex-1">
           <p className="text-xs font-medium">{post.sender?.userName}</p>
@@ -179,14 +181,14 @@ export function PostCard({
             {showComments && (
               <div className="flex flex-col gap-2 mt-2">
                 {post.comments?.map((comment, index) => (
-                  <div key={index} className="flex items-start gap-1.5">
-                    <Avatar className="h-4 w-4 mt-0.5">
+                  <div key={index} className="flex items-center gap-1.5">
+                    <Avatar className="h-6 w-6 pb-0.5">
                       <AvatarImage
-                        src={comment.sender.image}
-                        alt={comment.sender.userName}
+                        src={post.sender?.image}
+                        alt={post.sender?.userName}
                       />
-                      <AvatarFallback className="text-[8px]">
-                        {comment.sender.userName?.charAt(0)}
+                      <AvatarFallback className="text-[14px]">
+                        {user?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
