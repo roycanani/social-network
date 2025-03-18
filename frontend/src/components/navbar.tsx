@@ -32,7 +32,7 @@ export function Navbar() {
           </Link>
           <Link
             to="/chats"
-            className="items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hidden md:flex"
+            className="items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent flex"
           >
             <MessageCircle className="h-4 w-4" />
             Chats
@@ -54,10 +54,12 @@ export function Navbar() {
             </Button>
           </Link>
 
-          <Button size="icon" variant="ghost" className="sm:hidden">
-            <Plus className="h-5 w-5" />
-            <span className="sr-only">New Post</span>
-          </Button>
+          <Link to="create-post">
+            <Button size="icon" variant="ghost" className="sm:hidden">
+              <Plus className="h-5 w-5" />
+              <span className="sr-only">New Post</span>
+            </Button>
+          </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
