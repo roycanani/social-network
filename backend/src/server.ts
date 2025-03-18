@@ -52,7 +52,7 @@ const options = {
 };
 const specs = swaggerJSDoc(options);
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
-app.get("/openapi.json", (req, res) => {
+app.get("/openapi.json", (_req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(specs);
 });
@@ -118,7 +118,7 @@ const setupWebSocket = (server: http.Server) => {
           }
 
           // Find or create the chat
-          let referencedChat = await chatModel.findById(chat);
+          const referencedChat = await chatModel.findById(chat);
           if (!referencedChat) {
             ws.send(JSON.stringify({ error: "Chat not found" }));
           return;

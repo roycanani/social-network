@@ -1,8 +1,8 @@
 import request from "supertest";
-import { chatModel } from "../chats/model";
+import { Chat, chatModel } from "../chats/model";
 import { userModel } from "../users/model";
 import initApp from "../server";
-import { Express, response } from "express";
+import { Express } from "express";
 import { User } from "./common";
 
 let app: Express;
@@ -24,7 +24,7 @@ const testUser2: User = {
 };
 
 describe("Chats API", () => {
-    let chat: any;
+    let chat: Chat;
 
     const authHeader = () => ({ authorization: `JWT ${testUser1.accessToken}` }); // Helper for Authorization header
 

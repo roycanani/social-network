@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export interface Message {
+  _id: string;
   chat: mongoose.Types.ObjectId;
   sender: mongoose.Types.ObjectId;
   content: string;

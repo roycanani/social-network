@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export interface Chat {
+    _id: string;
     users: string[]; // List of user IDs
     lastMessage?: string; // Latest message reference
     updatedAt: Date;
