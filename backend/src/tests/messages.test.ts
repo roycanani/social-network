@@ -5,6 +5,7 @@ import { Chat, chatModel } from "../chats/model";
 import initApp from "../server";
 import { Express } from "express";
 import { User } from "./common";
+import mongoose from "mongoose";
 
 let app: Express;
 
@@ -65,6 +66,8 @@ describe("Messages API", () => {
     await messageModel.deleteMany({});
     await chatModel.deleteMany({});
     await userModel.deleteMany({});
+
+    await mongoose.connection.close();
   });
 
   describe("GET /messages", () => {

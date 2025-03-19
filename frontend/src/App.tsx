@@ -21,6 +21,7 @@ import Signup from "./pages/SignUp";
 import Logout from "./pages/Logout";
 import ProfilePage from "./pages/ProfilePage";
 
+// eslint-disable-next-line no-undef
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 function App() {

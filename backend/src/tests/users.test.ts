@@ -41,10 +41,9 @@ beforeAll(async () => {
   testUser2._id = loginRes2.body._id;
 });
 
-afterAll((done) => {
+afterAll(async () => {
   console.log("afterAll");
-  mongoose.connection.close();
-  done();
+  await mongoose.connection.close();
 });
 
 describe("Users Tests", () => {
