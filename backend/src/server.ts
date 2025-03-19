@@ -51,6 +51,17 @@ app.use("/messages", messagesRouter);
 app.use("/ai", aiRouter);
 app.use(express.static("public"));
 
+app.enable("trust proxy");
+
+if (process.env.USE_HTTPS === "true") {
+  app.use((req, res, next) => {
+    if (!req.secure) {
+      return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
+
 const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
 
 const options = {
