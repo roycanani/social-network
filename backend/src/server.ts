@@ -77,6 +77,8 @@ const options = {
   apis: ["./src/**/*route.ts"],
 };
 const specs = swaggerJSDoc(options);
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 app.use("/docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.get("/openapi.json", (_req, res) => {
   res.setHeader("Content-Type", "application/json");
