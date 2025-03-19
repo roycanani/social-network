@@ -62,7 +62,7 @@ if (process.env.USE_HTTPS === "true") {
   });
 }
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+const BASE_URL = process.env.BASE_URL || "https://localhost:4000";
 
 const options = {
   definition: {

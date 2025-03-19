@@ -49,8 +49,8 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - REACT_APP_API_URL=${REACT_APP_API_URL}
-      - REACT_APP_BASE_URL=${REACT_APP_BASE_URL}
+      - REACT_APP_API_URL=https://localhost:4000
+      - REACT_APP_BASE_URL=https://localhost
     depends_on:
       - backend
     restart: unless-stopped

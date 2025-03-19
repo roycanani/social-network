@@ -2,6 +2,8 @@ interface Config {
   apiUrl: string;
   baseUrl: string;
 }
+console.log(process.env.REACT_APP_API_URL);
+console.log(process.env.REACT_APP_BASE_URL);
 
 const config: Config = {
   // eslint-disable-next-line no-undef

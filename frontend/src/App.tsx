@@ -21,6 +21,8 @@ import Signup from "./pages/SignUp";
 import Logout from "./pages/Logout";
 import ProfilePage from "./pages/ProfilePage";
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 function App() {
   const { setToken } = useAuthDispatch();
   const { token } = useAuth();
