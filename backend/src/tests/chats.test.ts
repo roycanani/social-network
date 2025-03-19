@@ -4,6 +4,7 @@ import { userModel } from "../users/model";
 import initApp from "../server";
 import { Express } from "express";
 import { User } from "./common";
+import mongoose from "mongoose";
 
 let app: Express;
 
@@ -58,6 +59,8 @@ describe("Chats API", () => {
     // Clean up the database
     await chatModel.deleteMany({});
     await userModel.deleteMany({});
+
+    await mongoose.connection.close();
   });
 
   describe("GET /chats", () => {

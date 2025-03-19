@@ -23,10 +23,9 @@ beforeAll(async () => {
   testUser2._id = loginRes2.body._id;
 });
 
-afterAll((done) => {
+afterAll(async () => {
   console.log("afterAll");
-  mongoose.connection.close();
-  done();
+  await mongoose.connection.close();
 });
 
 beforeEach(() => {
@@ -115,6 +114,11 @@ describe("Auth Tests", () => {
 
     expect(response.statusCode).toBe(400);
     jest.restoreAllMocks();
+  });
+  test("Register fails with duplicate email", async () => {
+    await request(app).post("/auth/register").send(testUser);
+    const response = await request(app).post("/auth/register").send(testUser);
+    expect(response.statusCode).toBe(400);
   });
 
   test("Test success Auth login", async () => {

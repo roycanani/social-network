@@ -11,9 +11,12 @@ beforeAll(async () => {
   jest.setTimeout(30000); // Set timeout to 30 seconds for database connection
 });
 
-afterAll((done) => {
-  mongoose.connection.close();
-  done();
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+afterEach(async () => {
+  await mongoose.connection.close();
 });
 
 describe("Server Initialization Tests", () => {
