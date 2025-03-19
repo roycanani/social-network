@@ -37,8 +37,10 @@ passport.use(
           done(null, createdUser);
         } else {
           console.log("User found", user);
-
-          done(null, user);
+          const updatedUser = await userModel.findOne({
+            email: profile._json.email,
+          });
+          done(null, updatedUser!);
         }
       } catch (err) {
         done(err, undefined);
