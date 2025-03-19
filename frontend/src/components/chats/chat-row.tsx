@@ -55,6 +55,18 @@ export function ChatRow({ chat }: ChatRowProps) {
     fetchOtherUser();
   }, []);
 
+  useEffect(() => {
+    const fetchLastMessage = async () => {
+      if (chat.lastMessage) {
+        const response = await axios.get(`/messages/${chat.lastMessage}`);
+
+        setLastMessageContent(response.data.content);
+      }
+    };
+
+    fetchLastMessage();
+  }, [chat]);
+
   const handleClick = () => {
     navigate(`/chat/${chat._id}`);
   };

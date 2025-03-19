@@ -55,6 +55,7 @@ export function ChatsList() {
           updatedChat.type === "updateChat"
         ) {
           const { type, ...rest } = updatedChat;
+          setChats([]);
           setChats((prevChats) => {
             const existingChatIndex = prevChats.findIndex(
               (chat) => chat._id === rest._id
