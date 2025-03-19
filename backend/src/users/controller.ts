@@ -21,13 +21,13 @@ class UsersController extends BaseController<User> {
 
   async update(req: Request, res: Response) {
     await this.uploadImage(req, res);
+    req.body = JSON.parse(req.body.user);
 
     if (req.file?.filename) {
-      req.body.image = req.file.filename;
+      req.body.image = `images/${req.file?.filename}`;
       const oldPhoto = (await userModel.findById(req.body._id))?.image;
       if (oldPhoto) deleteFile(oldPhoto);
     }
-    req.body = JSON.parse(req.body.user);
 
     await super.update(req, res);
   }

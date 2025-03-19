@@ -103,8 +103,6 @@ export function ChatsList() {
     );
   }
 
-  console.log(chats);
-
   return (
     <div className="flex-1 overflow-y-auto">
       {chats
