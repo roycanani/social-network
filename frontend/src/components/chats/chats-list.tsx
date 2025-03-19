@@ -5,16 +5,6 @@ import { useAuth } from "../../auth.context";
 import axios from "axios";
 import config from "../../config";
 
-// Define the chat type
-// interface Chat {
-//   id: string;
-//   userName: string;
-//   avatar: string;
-//   lastMessage: string;
-//   timestamp: string;
-//   unread: boolean;
-// }
-
 interface Chat {
   _id?: string;
   users: string[]; // List of user IDs
@@ -29,7 +19,6 @@ export function ChatsList() {
   const currentUser = useAuth();
 
   useEffect(() => {
-    // Fetch initial chats from API using axios
     const fetchChats = async () => {
       try {
         const { data } = await axios.get(`${config.apiUrl}/chats`, {
@@ -46,7 +35,6 @@ export function ChatsList() {
 
     fetchChats();
 
-    // Listen for real-time chat updates
     if (socket && currentUser) {
       socket.onmessage = (event) => {
         const updatedChat = JSON.parse(event.data);
@@ -60,7 +48,6 @@ export function ChatsList() {
               (chat) => chat._id === rest._id
             );
             if (existingChatIndex !== -1) {
-              // Update existing chat
               const updatedChats = [...prevChats];
               updatedChats[existingChatIndex] = {
                 ...prevChats[existingChatIndex],
@@ -68,7 +55,6 @@ export function ChatsList() {
               };
               return updatedChats;
             } else {
-              // Add new chat
               return [rest, ...prevChats];
             }
           });
@@ -91,7 +77,6 @@ export function ChatsList() {
     );
   }
 
-  // UI rendering
   if (chats.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-4 text-center">

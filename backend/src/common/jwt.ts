@@ -21,7 +21,7 @@ export const generateToken = (
   ) {
     return null;
   }
-  // generate token
+
   const random = Math.random().toString();
   const accessToken = jwt.sign(
     {
@@ -53,7 +53,6 @@ export type TokenUser = Document<string, unknown, User> & User;
 
 export const verifyRefreshToken = (refreshToken: string | undefined) => {
   return new Promise<TokenUser>((resolve, reject) => {
-    //get refresh token from body
     if (!refreshToken || !process.env.SERVER_TOKEN_SECRET) {
       reject("fail");
       return;
@@ -67,10 +66,9 @@ export const verifyRefreshToken = (refreshToken: string | undefined) => {
           reject("fail");
           return;
         }
-        //get the user id fromn token
+
         const userId = payload._id;
         try {
-          //get the user form the db
           const user = await userModel.findById(userId);
           if (!user) {
             reject("fail");

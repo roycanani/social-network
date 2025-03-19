@@ -46,7 +46,6 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
         );
 
         if (isLiked) {
-          // Unlike
           updatedLikedBy =
             post.likedBy?.filter(
               (currUser) => currUser.userName !== user!.userName
@@ -56,7 +55,6 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
             likedBy: updatedLikedBy,
           };
         } else {
-          // Like
           updatedLikedBy = [...(post.likedBy || []), user!];
           return {
             ...post,
@@ -69,7 +67,6 @@ export function PostsList({ getOnlyPostsOfUser }: PostsListProps) {
 
     setPosts(updatedPosts); // Update the state with the new posts array
 
-    // Send the updated likedBy array to the server
     try {
       const formData = new FormData();
       formData.append(

@@ -167,13 +167,11 @@ router.post("/refresh", authController.refresh);
  */
 router.post("/logout", authController.logout);
 
-// Initiate Google authentication
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-// Handle callback from Google
 router.get(
   "/google/callback",
   passport.authenticate("google", {

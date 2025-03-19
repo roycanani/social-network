@@ -35,7 +35,6 @@ export default function CreatePost() {
     isEditing?: boolean;
   };
 
-  // If editing, populate the form with the post data
   useEffect(() => {
     if (isEditing && editingPost) {
       setTitle(editingPost.title);
@@ -49,7 +48,6 @@ export default function CreatePost() {
     if (file) {
       setImageFile(file);
 
-      // Optional: Generate a preview for the UI
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);

@@ -143,11 +143,9 @@ const setupWebSocket = (server: http.Server | https.Server) => {
             return;
           }
 
-          // Create a new chat
           const newChat = new chatModel({ users });
           await newChat.save();
 
-          // Broadcast the message to all clients
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
               client.send(
@@ -168,21 +166,18 @@ const setupWebSocket = (server: http.Server | https.Server) => {
             return;
           }
 
-          // Find or create the chat
           const referencedChat = await chatModel.findById(chat);
           if (!referencedChat) {
             ws.send(JSON.stringify({ error: "Chat not found" }));
             return;
           }
 
-          // Save the new message in DB
           const newMessage = new messageModel({ chat, sender, content });
           await newMessage.save();
 
-          // Update last message in chat
           referencedChat.lastMessage = newMessage._id.toString();
           await referencedChat.save();
-          //broadcast the updated chat to all clients
+
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
               client.send(
@@ -197,7 +192,6 @@ const setupWebSocket = (server: http.Server | https.Server) => {
             }
           });
 
-          // Broadcast the message to all clients
           wss.clients.forEach((client) => {
             if (client.readyState === 1) {
               client.send(

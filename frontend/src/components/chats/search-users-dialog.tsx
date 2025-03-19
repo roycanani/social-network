@@ -63,7 +63,6 @@ export function SearchUsersDialog({
       return;
     }
 
-    // Filter users based on search query
     const filteredUsers = allUsers.filter(
       (user) =>
         user.userName!.toLowerCase().includes(query.toLowerCase()) &&
@@ -74,12 +73,10 @@ export function SearchUsersDialog({
   };
 
   const startChat = (searchResultUserId: string) => {
-    // send ws message to start chat
     const newMessage = {
       users: [currentUser.user?._id, searchResultUserId],
     };
 
-    // Send the message via WebSocket
     if (socket) {
       socket.send(JSON.stringify({ type: "createChat", ...newMessage }));
     }
@@ -93,7 +90,6 @@ export function SearchUsersDialog({
           new Date(chat.updatedAt).getTime() > Date.now() - 5000
       );
       if (currentChat) {
-        // Navigate to the chat with this user
         navigate(`/chat/${currentChat._id}`);
       }
       onOpenChange(false);
