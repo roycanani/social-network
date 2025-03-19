@@ -25,6 +25,15 @@ RUN pnpm run build
 # Rebuild bcrypt specifically to ensure it's properly compiled
 RUN cd node_modules/bcrypt && npm rebuild bcrypt --build-from-source
 
+# Generate self-signed certificates so they are available at runtime
+RUN apk add --no-cache openssl && \
+    mkdir -p /certs && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /certs/selfsigned.key \
+    -out /certs/selfsigned.crt \
+    -subj "/CN=localhost" && \
+    apk del openssl
+
 # Set environment to production
 ENV NODE_ENV=production
 

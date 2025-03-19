@@ -5,9 +5,9 @@ interface Config {
 
 const config: Config = {
   // eslint-disable-next-line no-undef
-  apiUrl: process.env.REACT_APP_API_URL || "http://localhost:4000",
+  apiUrl: process.env.REACT_APP_API_URL || "https://localhost:4000",
   // eslint-disable-next-line no-undef
-  baseUrl: process.env.REACT_APP_BASE_URL || "http://localhost",
+  baseUrl: process.env.REACT_APP_BASE_URL || "https://localhost",
 };
 
 export default config;

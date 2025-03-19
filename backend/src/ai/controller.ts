@@ -11,11 +11,15 @@ export const generateContent = async (req: Request, res: Response) => {
   }
   const { postTitle } = req.body;
 
-  const promt = `I'm sending you a json with a text field, which is the tile of a post on a social network, please create a content description from the title, and respond with a json with a text field {text: "${postTitle}"}`;
-
+  const prompt = `I'm sending you a JSON containing a \`title\` field, which represents the title of a social media post about pets. The title is: "${postTitle}".  
+Please generate a compelling and engaging content description based on this title. Respond with a JSON containing a \`text\` field in the following format:
+{
+  "text": "<generated description>"
+}
+Ensure the description is engaging, pet-friendly, and suited for social media.`;
   try {
     const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: promt }] }],
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
         responseMimeType: "application/json",
       },

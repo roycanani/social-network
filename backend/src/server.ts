@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import mongoose from "mongoose";
+import fs from "fs";
 import bodyParser from "body-parser";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
@@ -15,6 +16,7 @@ import "./auth/googleStrategy";
 import cors from "cors";
 import { WebSocketServer } from "ws";
 import http from "http";
+import https from "https";
 import { chatModel } from "./chats/model";
 import { messageModel } from "./messages/model";
 import { chatsRouter } from "./chats/route";
@@ -28,6 +30,11 @@ const corsOptions = {
     "http://node119.cs.colman.ac.il",
     "http://node119.cs.colman.ac.il:4000",
     "http://node119.cs.colman.ac.il:80",
+    "https://localhost:80",
+    "https://localhost",
+    "https://node119.cs.colman.ac.il",
+    "https://node119.cs.colman.ac.il:4000",
+    "https://node119.cs.colman.ac.il:80",
   ],
   optionsSuccessStatus: 200,
 };
@@ -43,6 +50,17 @@ app.use("/chats", chatsRouter);
 app.use("/messages", messagesRouter);
 app.use("/ai", aiRouter);
 app.use(express.static("public"));
+
+app.enable("trust proxy");
+
+if (process.env.USE_HTTPS === "true") {
+  app.use((req, res, next) => {
+    if (!req.secure) {
+      return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
 
@@ -78,9 +96,23 @@ const initApp = () => {
         mongoose
           .connect(process.env.DB_CONNECT)
           .then(() => {
-            const server = http.createServer(app);
-            setupWebSocket(server);
-            resolve({ app, server });
+            console.log(process.env.USE_HTTPS);
+            if (process.env.USE_HTTPS === "true") {
+              console.log("Using HTTPS");
+              const keyPath =
+                process.env.SSL_KEY_PATH || "/certs/selfsigned.key";
+              const certPath =
+                process.env.SSL_CERT_PATH || "/certs/selfsigned.crt";
+              const key = fs.readFileSync(keyPath);
+              const cert = fs.readFileSync(certPath);
+              const server = https.createServer({ key, cert }, app);
+              setupWebSocket(server);
+              resolve({ app, server });
+            } else {
+              const server = http.createServer(app);
+              setupWebSocket(server);
+              resolve({ app, server });
+            }
           })
           .catch((error) => {
             reject(error);
@@ -90,7 +122,7 @@ const initApp = () => {
   );
 };
 
-const setupWebSocket = (server: http.Server) => {
+const setupWebSocket = (server: http.Server | https.Server) => {
   const wss = new WebSocketServer({ server });
   console.log("WebSocket server initialized.");
 
