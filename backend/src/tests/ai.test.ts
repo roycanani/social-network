@@ -13,6 +13,7 @@ jest.mock("@google/generative-ai", () => {
   };
 });
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mockGenerateContent =
   GoogleGenerativeAI().getGenerativeModel().generateContent;

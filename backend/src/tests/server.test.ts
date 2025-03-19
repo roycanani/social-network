@@ -3,7 +3,6 @@ import initApp from "../server";
 import { Express } from "express";
 import WebSocket from "ws";
 import { Server } from "http";
-import { chatModel } from "../chats/model";
 
 let app: Express;
 
