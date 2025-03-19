@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import mongoose from "mongoose";
+import fs from "fs";
 import bodyParser from "body-parser";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
@@ -84,8 +85,16 @@ const initApp = () => {
         mongoose
           .connect(process.env.DB_CONNECT)
           .then(() => {
-            if (process.env.USE_HTTPS) {
-              const server = https.createServer(app);
+            console.log(process.env.USE_HTTPS);
+            if (process.env.USE_HTTPS === "true") {
+              console.log("Using HTTPS");
+              const keyPath =
+                process.env.SSL_KEY_PATH || "/certs/selfsigned.key";
+              const certPath =
+                process.env.SSL_CERT_PATH || "/certs/selfsigned.crt";
+              const key = fs.readFileSync(keyPath);
+              const cert = fs.readFileSync(certPath);
+              const server = https.createServer({ key, cert }, app);
               setupWebSocket(server);
               resolve({ app, server });
             } else {
