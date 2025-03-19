@@ -78,7 +78,6 @@ function App() {
     };
 
     validateToken();
-    // eslint-disable-next-line
   }, [token]);
 
   return (

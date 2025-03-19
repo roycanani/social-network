@@ -63,7 +63,6 @@ export function SearchUsersDialog({
       return;
     }
 
-    // Filter users based on search query
     const filteredUsers = allUsers.filter(
       (user) =>
         user.userName!.toLowerCase().includes(query.toLowerCase()) &&
@@ -73,13 +72,21 @@ export function SearchUsersDialog({
     setSearchResults(filteredUsers);
   };
 
-  const startChat = (searchResultUserId: string) => {
-    // send ws message to start chat
+  const startChat = async (searchResultUserId: string) => {
+    const { data: chats } = await axios.get("/chats");
+    const isAlreadyChat = chats.find(
+      (chat: any) =>
+        chat.users.includes(currentUser.user?._id) &&
+        chat.users.includes(searchResultUserId)
+    );
+    if (isAlreadyChat) {
+      navigate(`/chat/${isAlreadyChat._id}`);
+      return;
+    }
     const newMessage = {
       users: [currentUser.user?._id, searchResultUserId],
     };
 
-    // Send the message via WebSocket
     if (socket) {
       socket.send(JSON.stringify({ type: "createChat", ...newMessage }));
     }
@@ -93,7 +100,6 @@ export function SearchUsersDialog({
           new Date(chat.updatedAt).getTime() > Date.now() - 5000
       );
       if (currentChat) {
-        // Navigate to the chat with this user
         navigate(`/chat/${currentChat._id}`);
       }
       onOpenChange(false);

@@ -17,9 +17,8 @@ const testUser: User = {
   image: "", // Default value for image
 };
 
-// Mock the models
 jest.mock("../posts/model");
-// Mock the authentication middleware
+
 jest.mock("../auth/controller", () => {
   return {
     authMiddleware: jest.fn((req, res, next) => {

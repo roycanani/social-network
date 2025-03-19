@@ -10,7 +10,6 @@ import { User } from "./model";
 import { parseJwt } from "./lib/utils";
 import config from "./config";
 
-// Updated types
 type AuthState = {
   token: string | null;
   user: (User & { image: string }) | null;
@@ -43,7 +42,7 @@ const AuthProvider = ({
         _id: tokenUser?._id || "",
         email: tokenUser?.email || "",
         image: tokenUser?.image || "",
-        userName: tokenUser?.username || ""
+        userName: tokenUser?.username || "",
       },
     });
   };
@@ -78,7 +77,6 @@ const AuthProvider = ({
   );
 };
 
-// Updated hooks
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === null) {

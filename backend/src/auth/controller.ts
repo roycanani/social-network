@@ -146,7 +146,6 @@ const refresh = async (req: Request, res: Response) => {
       refreshToken: tokens.refreshToken,
       _id: user._id,
     });
-    //send new token
   } catch (err) {
     res.status(400).send("fail " + err);
   }

@@ -46,10 +46,7 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   }, [user]);
 
   useEffect(() => {
-    // Fetch user from the list of all users
-
     if (user && allUsers && chatId) {
-      // Fetch initial messages from an API
       const fetchMessages = async () => {
         try {
           const { data: currentChat } = await axios.get(`/chats/${chatId}`);
@@ -75,7 +72,6 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
   }, [chatId, allUsers, user]);
 
   useEffect(() => {
-    // Scroll to bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -109,13 +105,9 @@ export function ChatInterface({ chatId }: ChatInterfaceProps) {
       createdAt: new Date().toISOString(),
     };
 
-    // Send the message via WebSocket
     if (socket) {
       socket.send(JSON.stringify({ type: "sendMessage", ...newMessage }));
     }
-
-    // Optimistically update the UI
-    // setMessages([...messages, newMessage])
   };
 
   if (loading) {

@@ -12,11 +12,9 @@ import { User } from "./common";
 let app: Express;
 
 beforeAll(async () => {
-  console.log("beforeAll");
   app = (await initApp()).app;
   await userModel.deleteMany();
 
-  // create testUser2
   await request(app).post("/auth/register").send(testUser2);
   const loginRes2 = await request(app).post("/auth/login").send(testUser2);
   testUser2.refreshToken = loginRes2.body.refreshToken;
@@ -24,7 +22,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  console.log("afterAll");
   await mongoose.connection.close();
 });
 
@@ -229,7 +226,6 @@ describe("Auth Tests", () => {
   });
 
   test("Login handles user with null refreshToken", async () => {
-    // Create a user with a null refreshToken array
     const user = await userModel.create({
       userName: "nullTokenUser",
       email: "nullTokenUser@user.com",
@@ -237,7 +233,6 @@ describe("Auth Tests", () => {
       refreshToken: null,
     });
 
-    // Attempt login
     const response = await request(app)
       .post(baseUrl + "/login")
       .send({
@@ -248,7 +243,6 @@ describe("Auth Tests", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.refreshToken).toBeDefined();
 
-    // Verify that the refreshToken array is populated
     const updatedUser = await userModel.findById(user._id);
     expect(updatedUser?.refreshToken).toContain(response.body.refreshToken);
   });
@@ -335,25 +329,20 @@ describe("Auth Tests", () => {
   });
 
   test("Refresh token fails when token is not in user's refreshToken array", async () => {
-    // Clear the refreshToken array before the test
     await userModel.updateOne({ _id: testUser._id }, { refreshToken: [] });
 
-    // Generate a token that is not in the user's array
     const invalidToken = jwt.sign(
       { _id: "nonexistentUserId" },
       process.env.SERVER_TOKEN_SECRET!,
       { expiresIn: "1h" }
     );
 
-    // Send the invalid token to the refresh endpoint
     const response = await request(app).post("/auth/refresh").send({
       refreshToken: invalidToken,
     });
 
-    // Assert the response indicates failure
     expect(response.statusCode).toBe(400);
 
-    // Verify the user's refreshToken array remains empty
     const updatedUser = await userModel.findById(testUser._id);
     expect(updatedUser?.refreshToken).toEqual([]);
   });
@@ -377,7 +366,6 @@ describe("Auth Tests", () => {
   test("Generate token fails when environment variables are missing", () => {
     const originalRefreshTokenSecret = process.env.SERVER_TOKEN_SECRET;
 
-    // Temporarily unset environment variables
     delete process.env.SERVER_TOKEN_SECRET;
 
     const tokens = jwtManager.generateToken(
@@ -388,14 +376,12 @@ describe("Auth Tests", () => {
     );
     expect(tokens).toBeNull();
 
-    // Restore environment variables
     process.env.SERVER_TOKEN_SECRET = originalRefreshTokenSecret;
   });
 
   test("Test logout", async () => {
     const original_jwt_token_expiration = process.env.TOKEN_EXPIRES;
 
-    // temparerlly change the vlaues
     process.env.TOKEN_EXPIRES = "3s";
 
     const response = await request(app)
@@ -448,10 +434,8 @@ describe("Auth Tests", () => {
   });
 
   test("Returns 500 when generateToken returns null", async () => {
-    // Mock `generateToken` to return null
     jest.spyOn(jwtManager, "generateToken").mockReturnValue(null);
 
-    // Mock `verifyRefreshToken` to resolve with a valid user
     jest.spyOn(jwtManager, "verifyRefreshToken").mockResolvedValue({
       _id: testUser._id,
       refreshToken: testUser.refreshToken,

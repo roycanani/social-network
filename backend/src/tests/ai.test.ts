@@ -2,7 +2,6 @@ import request from "supertest";
 import express, { Express } from "express";
 import aiRouter from "../ai/route"; // Import the ai router
 
-// Mock the @google/generative-ai library
 jest.mock("@google/generative-ai", () => {
   const mockGenerateContent = jest.fn(); // Define the mock function inside the mock
   return {
@@ -14,8 +13,6 @@ jest.mock("@google/generative-ai", () => {
   };
 });
 
-// Import the mock function after defining it in jest.mock
-// eslint-disable-next-line
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mockGenerateContent =
   GoogleGenerativeAI().getGenerativeModel().generateContent;
@@ -34,7 +31,6 @@ afterAll(() => {
 
 describe("generateContent Tests", () => {
   test("Success - Generate content", async () => {
-    // Mock the resolved value for generateContent
     mockGenerateContent.mockResolvedValue({
       response: {
         text: () => JSON.stringify({ text: "Generated content description" }),
@@ -57,7 +53,6 @@ describe("generateContent Tests", () => {
   });
 
   test("Fail - Error in generateContent method", async () => {
-    // Mock a rejected value for generateContent
     mockGenerateContent.mockRejectedValue(new Error("AI Service Error"));
 
     const response = await request(app)

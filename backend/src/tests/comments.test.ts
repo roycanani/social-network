@@ -5,10 +5,9 @@ import { postModel } from "../posts/model";
 import commentsRouter from "../comments/route";
 import { commentModel } from "../comments/model";
 
-// Mock the models
 jest.mock("../posts/model");
 jest.mock("../comments/model");
-// Mock the authentication middleware
+
 jest.mock("../auth/controller", () => {
   return {
     authMiddleware: jest.fn((req, res, next) => {
@@ -40,17 +39,14 @@ describe("CommentsController.create Tests", () => {
   };
 
   test("Success - Create a comment", async () => {
-    // Mock postModel.findById to return a valid post
     (postModel.findById as jest.Mock).mockResolvedValue({ _id: mockPostId });
 
-    // Mock commentModel.create to return the created comment
     (commentModel.create as jest.Mock).mockResolvedValue({
       _id: new mongoose.Types.ObjectId(),
       ...mockComment,
       sender: mockUserId,
     });
 
-    // Mock postModel.updateOne to simulate successful update
     (postModel.updateOne as jest.Mock).mockResolvedValue({});
 
     const response = await request(app)
@@ -64,7 +60,6 @@ describe("CommentsController.create Tests", () => {
   });
 
   test("Fail - Post not found", async () => {
-    // Mock postModel.findById to return null
     (postModel.findById as jest.Mock).mockResolvedValue(null);
 
     const response = await request(app)
@@ -77,10 +72,8 @@ describe("CommentsController.create Tests", () => {
   });
 
   test("Fail - ValidationError when creating comment", async () => {
-    // Mock postModel.findById to return a valid post
     (postModel.findById as jest.Mock).mockResolvedValue({ _id: mockPostId });
 
-    // Mock commentModel.create to throw a ValidationError
     (commentModel.create as jest.Mock).mockRejectedValue({
       name: "ValidationError",
       message: "Invalid comment data",
@@ -97,10 +90,8 @@ describe("CommentsController.create Tests", () => {
   });
 
   test("Fail - MongoServerSelectionError", async () => {
-    // Mock postModel.findById to return a valid post
     (postModel.findById as jest.Mock).mockResolvedValue({ _id: mockPostId });
 
-    // Mock commentModel.create to throw a MongoServerSelectionError
     (commentModel.create as jest.Mock).mockRejectedValue({
       name: "MongoServerSelectionError",
     });
@@ -116,10 +107,8 @@ describe("CommentsController.create Tests", () => {
   });
 
   test("Fail - Generic error", async () => {
-    // Mock postModel.findById to return a valid post
     (postModel.findById as jest.Mock).mockResolvedValue({ _id: mockPostId });
 
-    // Mock commentModel.create to throw a generic error
     (commentModel.create as jest.Mock).mockRejectedValue(
       new Error("Unknown error")
     );

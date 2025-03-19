@@ -28,14 +28,12 @@ beforeAll(async () => {
   app = (await initApp()).app;
   await userModel.deleteMany();
 
-  // create testUser
   await request(app).post("/auth/register").send(testUser);
   const loginRes = await request(app).post("/auth/login").send(testUser);
   testUser.accessToken = loginRes.body.accessToken;
   testUser.refreshToken = loginRes.body.refreshToken;
   testUser._id = loginRes.body._id;
 
-  // create testUser2
   await request(app).post("/auth/register").send(testUser2);
   const loginRes2 = await request(app).post("/auth/login").send(testUser2);
   testUser2.accessToken = loginRes2.body.accessToken;

@@ -5,7 +5,7 @@ import { commentModel } from "./model";
 class CommentsController {
   async create(req: Request, res: Response) {
     const { postId, comment } = req.body;
-    // Check if the post exists by finding the post ID
+
     const post = await postModel.findById(postId);
 
     if (!post) {
