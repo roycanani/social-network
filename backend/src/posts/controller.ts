@@ -46,7 +46,6 @@ class PostsController extends BaseController<Post> {
     await this.uploadImage(req, res);
     try {
       const postId: string = req.params.postId;
-      const sender = req.params.userId;
 
       const updatedPost: Post = JSON.parse(req.body.post);
 

@@ -5,7 +5,6 @@ import postsMock from "./postsMock.json";
 import { postModel } from "../posts/model";
 import { User } from "./common";
 import { postsRouter } from "../posts/route";
-import { deleteFile } from "../common/storage";
 
 let app: Express;
 

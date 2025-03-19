@@ -5,7 +5,7 @@ import BaseController from "../common/base_controller";
 
 const mockModel = {
   find: jest.fn(),
-} as unknown as Model<any>;
+} as unknown as Model<unknown>;
 
 const app: Express = express();
 app.use(express.json());
