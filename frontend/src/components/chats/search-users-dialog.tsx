@@ -72,7 +72,17 @@ export function SearchUsersDialog({
     setSearchResults(filteredUsers);
   };
 
-  const startChat = (searchResultUserId: string) => {
+  const startChat = async (searchResultUserId: string) => {
+    const { data: chats } = await axios.get("/chats");
+    const isAlreadyChat = chats.find(
+      (chat: any) =>
+        chat.users.includes(currentUser.user?._id) &&
+        chat.users.includes(searchResultUserId)
+    );
+    if (isAlreadyChat) {
+      navigate(`/chat/${isAlreadyChat._id}`);
+      return;
+    }
     const newMessage = {
       users: [currentUser.user?._id, searchResultUserId],
     };
