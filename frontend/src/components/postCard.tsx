@@ -65,7 +65,7 @@ export function PostCard({
         <Avatar className="h-6 w-6">
           <AvatarImage src={post.sender?.image} alt={post.sender?.userName} />
           <AvatarFallback>
-            {user?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
+            {post.sender?.userName?.slice(0, 2).toUpperCase() ?? "GU"}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1">
