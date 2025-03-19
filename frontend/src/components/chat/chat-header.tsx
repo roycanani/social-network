@@ -29,10 +29,7 @@ export function ChatHeader({ user }: ChatHeaderProps) {
       </Button>
 
       <Avatar className="h-9 w-9">
-        <AvatarImage
-          src={user.image ?? user.userName?.slice(0, 2).toUpperCase() ?? "GU"}
-          alt={user.userName}
-        />
+        <AvatarImage src={`/${user?.image}`} alt={user.userName} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
 
